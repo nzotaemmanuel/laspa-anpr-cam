@@ -5,6 +5,7 @@ import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
 import { Search, ShieldAlert, Eye, Settings2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { formatDate } from '../utils/time';
 
 
 export const Fines: React.FC = () => {
@@ -69,14 +70,14 @@ export const Fines: React.FC = () => {
       label: 'Issued Date',
       sortable: true,
       cellClassName: 'font-tabular text-xs',
-      render: (row) => new Date(row.issued_date).toLocaleDateString(),
+      render: (row) => formatDate(row.issued_date),
     },
     {
       key: 'due_date',
       label: 'Due Date',
       sortable: true,
       cellClassName: 'font-tabular text-xs',
-      render: (row) => new Date(row.due_date).toLocaleDateString(),
+      render: (row) => formatDate(row.due_date),
     },
     {
       key: 'status',

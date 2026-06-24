@@ -11,6 +11,7 @@ import type { DetectionEvent } from '../types';
 import { PlateImage } from './PlateImage';
 import { VehicleImage } from './VehicleImage';
 import { StatusBadge } from './StatusBadge';
+import { formatTimeShort } from '../utils/time';
 
 interface DetectionCardProps {
   event: DetectionEvent;
@@ -37,15 +38,6 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
     }
   };
 
-  // Format captured timestamp
-  const formatTime = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    } catch {
-      return '';
-    }
-  };
 
   return (
     <div className={`glass-panel rounded-xl overflow-hidden shadow-lg transition-all duration-200 border-l-4 ${
@@ -140,7 +132,7 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
             <div className="flex items-center gap-1.5 text-text-muted justify-end">
               <Clock className="w-3.5 h-3.5" />
               <span className="font-tabular">
-                {formatTime(event.captured_at)}
+                {formatTimeShort(event.captured_at)}
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-text-muted">

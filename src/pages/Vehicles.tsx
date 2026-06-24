@@ -7,6 +7,7 @@ import { formatImageSrc } from '../components/PlateImage';
 import { Search, MapPin, ShieldAlert, Eye, Settings2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { DetectionEvent } from '../types';
+import { formatDateTime } from '../utils/time';
 
 export const Vehicles: React.FC = () => {
   const {
@@ -126,7 +127,7 @@ export const Vehicles: React.FC = () => {
       label: 'Date & Time',
       sortable: true,
       cellClassName: 'font-tabular text-xs',
-      render: (row) => new Date(row.captured_at).toLocaleString(),
+      render: (row) => formatDateTime(row.captured_at),
     },
     {
       key: 'camera_location',

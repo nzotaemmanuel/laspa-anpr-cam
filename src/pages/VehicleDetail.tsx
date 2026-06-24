@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { PlateImage } from '../components/PlateImage';
 import { VehicleImage } from '../components/VehicleImage';
+import { formatTime, formatDate } from '../utils/time';
 import { StatusBadge } from '../components/StatusBadge';
 import { ActionModal } from '../components/ActionModal';
 
@@ -272,8 +273,8 @@ export const VehicleDetail: React.FC = () => {
 
               <div className="bg-slate-900/30 p-3 rounded-lg border border-dark-border/40">
                 <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] block">Timestamp</span>
-                <span className="font-semibold text-slate-200 mt-1 block">{new Date(event.captured_at).toLocaleTimeString()}</span>
-                <span className="text-[9px] text-text-muted block mt-0.5">{new Date(event.captured_at).toLocaleDateString()}</span>
+                <span className="font-semibold text-slate-200 mt-1 block">{formatTime(event.captured_at)}</span>
+                <span className="text-[9px] text-text-muted block mt-0.5">{formatDate(event.captured_at)}</span>
               </div>
             </div>
           </div>
@@ -403,13 +404,13 @@ export const VehicleDetail: React.FC = () => {
                     
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-bold text-slate-300">
-                        {new Date(hEvent.captured_at).toLocaleDateString()}
+                        {formatDate(hEvent.captured_at)}
                       </span>
                       <StatusBadge status={hEvent.status === 'SCANNED' ? (hEvent.enforcement_status || 'PENDING') : hEvent.status} />
                     </div>
                     
                     <span className="text-text-muted">
-                      Scanned at {hEvent.camera_location} ({new Date(hEvent.captured_at).toLocaleTimeString()})
+                      Scanned at {hEvent.camera_location} ({formatTime(hEvent.captured_at)})
                     </span>
 
                     {hEvent.notes && (

@@ -5,6 +5,7 @@ import {
   Video, Map, Users, ShieldAlert,
   Sliders, Link2, CheckCircle2, RefreshCw, Mail, Phone
 } from 'lucide-react';
+import { formatTime, formatDate } from '../utils/time';
 
 export const Settings: React.FC = () => {
   const { 
@@ -304,8 +305,8 @@ export const Settings: React.FC = () => {
                 </div>
                 <div className="bg-slate-900/30 p-3 rounded-lg border border-dark-border/40">
                   <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] block">Last Ingest Event</span>
-                  <span className="font-tabular text-slate-300 mt-1 block">{new Date(lastWebhookTime).toLocaleTimeString()}</span>
-                  <span className="text-[9px] text-text-muted mt-0.5 block">{new Date(lastWebhookTime).toLocaleDateString()}</span>
+                  <span className="font-tabular text-slate-300 mt-1 block">{formatTime(lastWebhookTime)}</span>
+                  <span className="text-[9px] text-text-muted mt-0.5 block">{formatDate(lastWebhookTime)}</span>
                 </div>
                 <div className="bg-slate-900/30 p-3 rounded-lg border border-dark-border/40">
                   <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] block">Event Frequency</span>

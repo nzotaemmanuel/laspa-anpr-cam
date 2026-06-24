@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { api, LiveFeedWebSocket } from '../services/api';
 import type { DetectionEvent, SummaryMetrics, Fine, Booking, Camera, Zone, Officer } from '../types';
+import { todayWAT } from '../utils/time';
 
 interface AppFilters {
   from?: string;
@@ -175,8 +176,8 @@ export const useAppStore = create<AppState>((set, get) => {
     // Summary Metrics State
     summary: null,
     summaryFilters: {
-      from: new Date().toISOString().split('T')[0], // Today by default
-      to: new Date().toISOString().split('T')[0],
+      from: todayWAT(), // Today in WAT
+      to: todayWAT(),
     },
     summaryLoading: false,
     summaryError: null,

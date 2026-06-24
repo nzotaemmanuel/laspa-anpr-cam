@@ -7,6 +7,7 @@ import {
   ArrowLeft, ShieldAlert, CheckCircle2, ChevronRight, 
   FileText, AlertCircle, AlertTriangle, MapPin, Clock, Navigation as NavigationIcon
 } from 'lucide-react';
+import { formatDate, formatDateTime } from '../utils/time';
 
 export const FineDetail: React.FC = () => {
   const { fine_id } = useParams<{ fine_id: string }>();
@@ -164,11 +165,11 @@ export const FineDetail: React.FC = () => {
               </div>
               <div className="bg-slate-900/30 p-3 rounded-lg border border-dark-border/40">
                 <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] block">Date Issued</span>
-                <span className="font-tabular text-slate-300 mt-1 block">{new Date(fine.issued_date).toLocaleDateString()}</span>
+                <span className="font-tabular text-slate-300 mt-1 block">{formatDate(fine.issued_date)}</span>
               </div>
               <div className="bg-slate-900/30 p-3 rounded-lg border border-dark-border/40">
                 <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] block">Payment Deadline</span>
-                <span className="font-tabular text-slate-300 mt-1 block">{new Date(fine.due_date).toLocaleDateString()}</span>
+                <span className="font-tabular text-slate-300 mt-1 block">{formatDate(fine.due_date)}</span>
               </div>
             </div>
 
@@ -201,7 +202,7 @@ export const FineDetail: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1.5 text-text-muted">
                     <Clock className="w-4 h-4 shrink-0" />
-                    <span>Timestamp: <strong>{new Date(associatedEvent.captured_at).toLocaleString()}</strong></span>
+                    <span>Timestamp: <strong>{formatDateTime(associatedEvent.captured_at)}</strong></span>
                   </div>
                   <div className="flex items-center gap-1.5 text-text-muted">
                     <NavigationIcon className="w-4 h-4 shrink-0" />
@@ -235,7 +236,7 @@ export const FineDetail: React.FC = () => {
               <div className="text-xs flex flex-col gap-1">
                 <span className="text-text-muted uppercase font-bold tracking-wider text-[9px]">Date Filed</span>
                 <span className="text-slate-200 font-tabular font-semibold">
-                  {fine.dispute_date ? new Date(fine.dispute_date).toLocaleDateString() : 'N/A'}
+                  {fine.dispute_date ? formatDate(fine.dispute_date) : 'N/A'}
                 </span>
                 <span className="text-text-muted uppercase font-bold tracking-wider text-[9px] mt-2">Dispute Cause</span>
                 <p className="text-slate-200 italic bg-slate-900/60 p-3 rounded-lg border border-dark-border/40 mt-1">
@@ -300,7 +301,7 @@ export const FineDetail: React.FC = () => {
                 <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-status-cleared" />
                 <span className="font-bold text-slate-200">ANPR Detection Scanned</span>
                 <span className="text-[10px] text-text-muted">
-                  {associatedEvent ? new Date(associatedEvent.captured_at).toLocaleString() : 'Date unavailable'}
+                  {associatedEvent ? formatDateTime(associatedEvent.captured_at) : 'Date unavailable'}
                 </span>
               </div>
               {/* Event 2 */}
@@ -308,7 +309,7 @@ export const FineDetail: React.FC = () => {
                 <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-status-cleared" />
                 <span className="font-bold text-slate-200">Fine Citation Issued</span>
                 <span className="text-[10px] text-text-muted">
-                  {new Date(fine.issued_date).toLocaleString()}
+                  {formatDateTime(fine.issued_date)}
                 </span>
               </div>
               {/* Conditional Event 3 */}
@@ -319,7 +320,7 @@ export const FineDetail: React.FC = () => {
                   }`} />
                   <span className="font-bold text-slate-200">Dispute Claim Filed</span>
                   <span className="text-[10px] text-text-muted">
-                    {new Date(fine.dispute_date).toLocaleString()}
+                    {formatDateTime(fine.dispute_date)}
                   </span>
                 </div>
               )}
