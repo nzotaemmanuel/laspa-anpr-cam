@@ -139,26 +139,8 @@ export const Vehicles: React.FC = () => {
         </span>
       ),
     },
-    {
-      key: 'vehicle_details',
-      label: 'Make / Colour',
-      render: (row) => (
-        <span className="text-xs text-text-muted">
-          {row.vehicle_colour || '-'} {row.vehicle_make || ''}
-        </span>
-      ),
-    },
-    {
-      key: 'direction',
-      label: 'Dir',
-      render: (row) => (
-        <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${
-          row.direction === 'IN' ? 'bg-brand-accent/10 text-brand-accent' : 'bg-zinc-800 text-zinc-400'
-        }`}>
-          {row.direction}
-        </span>
-      ),
-    },
+
+
     {
       key: 'status',
       label: 'Status',

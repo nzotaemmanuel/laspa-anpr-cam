@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAppStore } from './store/appStore';
+import laspeLogo from './assets/laspa-logo.png';
 import { Dashboard } from './pages/Dashboard';
 import { LiveFeed } from './pages/LiveFeed';
 import { Vehicles } from './pages/Vehicles';
@@ -15,7 +16,7 @@ import { Settings } from './pages/Settings';
 
 import { 
   LayoutDashboard, Radio, ClipboardList, Receipt, BookOpen, 
-  FileSpreadsheet, Settings as SettingsIcon, Menu, X, Shield, LogOut
+  FileSpreadsheet, Settings as SettingsIcon, Menu, X, LogOut
 } from 'lucide-react';
 
 // Protected Route wrapper component
@@ -74,8 +75,8 @@ const AppLayout: React.FC = () => {
       {/* Sidebar Navigation (Desktop) */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-dark-border bg-dark-surface/30 shrink-0 select-none">
         {/* App Title */}
-        <div className="flex items-center gap-2.5 px-6 py-5 border-b border-dark-border/40">
-          <Shield className="w-6 h-6 text-brand-accent shrink-0" />
+        <div className="flex items-center gap-2.5 px-4 py-3 border-b border-dark-border/40">
+          <img src={laspeLogo} alt="LASPA Logo" className="w-10 h-10 rounded-full object-cover shrink-0 bg-white" />
           <div className="flex flex-col text-left">
             <span className="font-bold text-sm leading-none text-slate-100 uppercase tracking-tight">LASPA System</span>
             <span className="text-[9px] text-text-muted uppercase font-bold tracking-wider mt-1">ANPR Console</span>
@@ -140,7 +141,7 @@ const AppLayout: React.FC = () => {
             <div>
               <div className="flex items-center justify-between px-6 py-5 border-b border-dark-border/40">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-brand-accent" />
+                  <img src={laspeLogo} alt="LASPA Logo" className="w-8 h-8 rounded-full object-cover bg-white" />
                   <span className="font-bold text-sm text-slate-100">LASPA Console</span>
                 </div>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-text-muted">
@@ -196,7 +197,7 @@ const AppLayout: React.FC = () => {
           </button>
           
           <div className="flex items-center gap-1.5 font-bold text-sm tracking-tight text-slate-200">
-            <Shield className="w-4.5 h-4.5 text-brand-accent" />
+            <img src={laspeLogo} alt="LASPA" className="w-7 h-7 rounded-full object-cover bg-white" />
             <span>LASPA System</span>
           </div>
 
