@@ -11,7 +11,7 @@ import { Bookings } from './pages/Bookings';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 
-import { Login } from './pages/Login';
+
 
 import { 
   LayoutDashboard, Radio, ClipboardList, Receipt, BookOpen, 
@@ -39,8 +39,17 @@ const AppLayout: React.FC = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Auth bypassed — ensure a default session exists so the layout always renders
   if (!currentUser) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const defaultUser = {
+      officer_id: 'default_admin',
+      username: 'admin',
+      name: 'Administrator',
+      role: 'ADMIN' as const,
+      badge_number: 'BADGE-0001',
+    };
+    useAppStore.setState({ currentUser: defaultUser, role: 'ADMIN', token: 'bypass-token' });
+    return null;
   }
 
   const navItems = [
@@ -267,7 +276,6 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route path="/*" element={<AppLayout />} />
       </Routes>
     </BrowserRouter>

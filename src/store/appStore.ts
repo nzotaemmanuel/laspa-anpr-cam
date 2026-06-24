@@ -144,8 +144,17 @@ export const useAppStore = create<AppState>((set, get) => {
     } catch (e) {
       console.error('Error loading initial auth state:', e);
     }
-    // By default, require login if no saved auth session exists
-    return { currentUser: null, token: null, role: null };
+    // No saved session — use a default admin bypass so the app loads directly
+    const defaultUser: Officer = {
+      officer_id: 'default_admin',
+      username: 'admin',
+      name: 'Administrator',
+      role: 'ADMIN',
+      badge_number: 'BADGE-0001',
+    };
+    const defaultToken = 'bypass-token';
+    api.setToken(defaultToken);
+    return { currentUser: defaultUser, token: defaultToken, role: 'ADMIN' };
   };
 
   const initialAuth = getInitialAuthState();
