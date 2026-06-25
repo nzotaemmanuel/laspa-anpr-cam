@@ -266,21 +266,46 @@
 /* ─── Nav Active State ───────────────────────────────────────────────────────── */
 .nav-active {
   background: linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 100%);
-  border: 1px solid rgba(99,102,241,0.35);
+  border: 1px solid rgba(99,102,241,0.45);
   color: #A5B4FC;
-  box-shadow: 0 2px 12px rgba(99,102,241,0.2);
+  box-shadow: 0 4px 14px rgba(99,102,241,0.2);
+}
+.nav-active .nav-icon {
+  color: #A5B4FC;
+}
+.nav-active .nav-arrow {
+  color: #A5B4FC;
+}
+
+:root.light .nav-active {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  border: 1px solid #4F46E5;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+}
+:root.light .nav-active .nav-icon {
+  color: #ffffff;
+}
+:root.light .nav-active .nav-arrow {
+  color: #ffffff;
 }
 
 .nav-item {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   border: 1px solid transparent;
   border-radius: 10px;
   transition: background 0.18s, color 0.18s, border-color 0.18s;
 }
+.nav-item .nav-icon {
+  color: var(--text-secondary);
+}
 .nav-item:hover {
   background: var(--bg-surface-2);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   border-color: var(--border-subtle);
+}
+.nav-item:hover .nav-icon {
+  color: var(--text-primary);
 }
 
 /* ─── Table Styles ───────────────────────────────────────────────────────────── */
@@ -370,4 +395,13 @@
   height: 1px;
   background: var(--border-subtle);
   margin: 0;
+}
+
+/* ─── Slide-in Animation ──────────────────────────────────────────────────────── */
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+.animate-slide-in-left {
+  animation: slide-in-left 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

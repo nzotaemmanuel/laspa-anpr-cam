@@ -25,6 +25,8 @@ export const Dashboard: React.FC = () => {
     fetchVehicles,
     fetchCameras,
     fetchZones,
+    currentUser,
+    role,
   } = useAppStore();
 
   const [dateRangeType, setDateRangeType] = useState<'today' | 'week' | 'month' | 'custom'>('month');
@@ -171,6 +173,45 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
+      {/* Dashboard Welcome Hero Banner */}
+      <div className="relative rounded-2xl overflow-hidden glass-panel border border-dark-border/50 shadow-2xl p-6 md:p-8 text-left animate-slide-up flex flex-col md:flex-row items-center justify-between gap-6 min-h-[180px]">
+        {/* Background Image with overlay */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#080C18]/95 via-[#080C18]/70 to-[#080C18]/40 z-10" />
+          <img
+            src="/assets/lagos_smart_parking.png"
+            alt="Lagos Smart Parking"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        {/* Banner Content */}
+        <div className="relative z-10 flex-1">
+          <span className="bg-brand-accent/80 border border-brand-accent/35 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full text-white">
+            System Operations Dashboard
+          </span>
+          <h1 className="text-2xl font-extrabold text-white mt-3.5 tracking-tight leading-tight">
+            Lagos State Parking Authority (LASPA)
+          </h1>
+          <p className="text-xs text-slate-300 mt-2 max-w-xl leading-relaxed font-medium">
+            Monitor real-time ANPR camera ingestion feeds, penalty violations log, parking reservations bookings, and dynamic revenue metrics across Lagos metropolitan zones.
+          </p>
+        </div>
+        
+        {/* Time / Status pill */}
+        <div className="relative z-10 shrink-0 self-stretch flex flex-col justify-between items-end text-right">
+          <div className="bg-slate-900/80 backdrop-blur-md border border-dark-border/60 rounded-xl px-4 py-2 text-xs">
+            <span className="block text-[10px] text-text-muted font-bold uppercase tracking-wider">Console Operator</span>
+            <span className="font-bold text-slate-200 mt-0.5 block">{currentUser?.name || 'Administrator'}</span>
+            <span className="text-[10px] font-semibold text-brand-accent mt-0.5 block">{role} · {currentUser?.badge_number || 'BADGE-0001'}</span>
+          </div>
+          <div className="hidden md:flex items-center gap-1.5 bg-status-scanned/10 border border-status-scanned/25 text-status-scanned rounded-lg px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-scanned animate-pulse" />
+            Live Feed Connected
+          </div>
+        </div>
+      </div>
+
       {/* Top Action Filter Row */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div>

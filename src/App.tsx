@@ -132,12 +132,12 @@ const AppLayout: React.FC = () => {
         isActive(item.path) ? 'nav-active' : 'nav-item'
       }`}
     >
-      <span className="shrink-0" style={{ color: isActive(item.path) ? '#A5B4FC' : 'var(--text-muted)' }}>
+      <span className="shrink-0 nav-icon">
         {item.icon}
       </span>
       {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
       {!collapsed && isActive(item.path) && (
-        <ChevronRight className="w-3 h-3 opacity-60" style={{ color: '#A5B4FC' }} />
+        <ChevronRight className="w-3 h-3 opacity-60 nav-arrow" />
       )}
     </Link>
   );
@@ -248,7 +248,7 @@ const AppLayout: React.FC = () => {
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="w-72 h-full flex flex-col glass-sidebar"
+            className="w-72 h-full flex flex-col glass-sidebar animate-slide-in-left"
             onClick={e => e.stopPropagation()}
           >
             {/* Mobile logo header */}
