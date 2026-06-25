@@ -45,7 +45,7 @@ export const Settings: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 text-left">
+    <div className="flex flex-col gap-6 p-4 md:p-6 text-left">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div>

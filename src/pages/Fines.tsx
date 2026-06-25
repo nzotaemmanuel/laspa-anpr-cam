@@ -13,9 +13,48 @@ export const Fines: React.FC = () => {
   const [plate, setPlate] = useState('');
   const [status, setStatus] = useState<string>('');
 
+  // Pagination & Sorting State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+  const [sortKey, setSortKey] = useState<string>('issued_date');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
   useEffect(() => {
     fetchFines();
   }, []);
+
+  // Sort fines client-side
+  const sortedFines = React.useMemo(() => {
+    return [...fines].sort((a, b) => {
+      const aVal = (a as any)[sortKey];
+      const bVal = (b as any)[sortKey];
+      if (aVal === bVal) return 0;
+      if (aVal === undefined || aVal === null) return 1;
+      if (bVal === undefined || bVal === null) return -1;
+      
+      let comparison = 0;
+      if (typeof aVal === 'string') {
+        comparison = aVal.localeCompare(bVal);
+      } else {
+        comparison = aVal > bVal ? 1 : -1;
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [fines, sortKey, sortDirection]);
+
+  // Paginated fines
+  const totalItems = sortedFines.length;
+  const totalPages = Math.ceil(totalItems / limit) || 1;
+  const paginatedFines = React.useMemo(() => {
+    const startIdx = (currentPage - 1) * limit;
+    return sortedFines.slice(startIdx, startIdx + limit);
+  }, [sortedFines, currentPage, limit]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
 
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +62,7 @@ export const Fines: React.FC = () => {
       plate: plate.trim() || undefined,
       status: status ? [status] : undefined,
     });
+    setCurrentPage(1);
   };
 
   const getStatusStyle = (statusStr: string) => {
@@ -52,6 +92,8 @@ export const Fines: React.FC = () => {
       key: 'offence_code',
       label: 'Offence Code',
       sortable: true,
+      headerClassName: 'hidden sm:table-cell',
+      cellClassName: 'hidden sm:table-cell',
       render: (row) => (
         <span className="text-xs font-semibold text-slate-300" title={row.offence_description}>
           {row.offence_code}
@@ -69,14 +111,16 @@ export const Fines: React.FC = () => {
       key: 'issued_date',
       label: 'Issued Date',
       sortable: true,
-      cellClassName: 'font-tabular text-xs',
+      headerClassName: 'hidden md:table-cell',
+      cellClassName: 'hidden md:table-cell font-tabular text-xs',
       render: (row) => formatDate(row.issued_date),
     },
     {
       key: 'due_date',
       label: 'Due Date',
       sortable: true,
-      cellClassName: 'font-tabular text-xs',
+      headerClassName: 'hidden sm:table-cell',
+      cellClassName: 'hidden sm:table-cell font-tabular text-xs',
       render: (row) => formatDate(row.due_date),
     },
     {
@@ -92,7 +136,9 @@ export const Fines: React.FC = () => {
     {
       key: 'officer_id',
       label: 'Issued By',
-      render: (row) => <span className="text-xs text-text-muted">{row.officer_id}</span>,
+      headerClassName: 'hidden md:table-cell',
+      cellClassName: 'hidden md:table-cell text-xs text-text-muted',
+      render: (row) => <span>{row.officer_id}</span>,
     },
     {
       key: 'actions',
@@ -111,7 +157,7 @@ export const Fines: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 p-4 md:p-6">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div className="text-left">
@@ -189,11 +235,23 @@ export const Fines: React.FC = () => {
       {/* Table grid */}
       <DataTable
         columns={columns}
-        data={fines}
+        data={paginatedFines}
         loading={finesLoading}
-        totalItems={fines.length}
-        currentPage={1}
-        totalPages={1}
+        totalItems={totalItems}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        onLimitChange={(newLimit) => {
+          setLimit(newLimit);
+          setCurrentPage(1);
+        }}
+        onSortChange={(key, direction) => {
+          setSortKey(key);
+          setSortDirection(direction);
+        }}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        limit={limit}
       />
     </div>
   );

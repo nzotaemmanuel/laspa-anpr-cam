@@ -7,10 +7,12 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend 
 } from 'recharts';
 import { 
-  Calendar, AlertCircle, RotateCcw, Eye
+  Calendar, AlertCircle, RotateCcw, Eye,
+  Car, AlertTriangle, Scale, Lock, Truck, FileText, CheckCircle2, Clock, Coins
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatusBadge } from '../components/StatusBadge';
+import { formatDateTime } from '../utils/time';
 
 export const Dashboard: React.FC = () => {
   const {
@@ -168,7 +170,7 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 p-4 md:p-6">
       {/* Top Action Filter Row */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div>
@@ -176,7 +178,7 @@ export const Dashboard: React.FC = () => {
             Management Analytics
           </h2>
           <p className="text-xs text-text-muted font-semibold mt-1">
-            Real-time enforcement stats for LASPA ANPR Camera XCW-MICROCAM-02
+            Real-time enforcement stats for LASPA ANPR Cameras
           </p>
         </div>
 
@@ -265,81 +267,81 @@ export const Dashboard: React.FC = () => {
       )}
 
       {/* KPI 9-Card Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-9 gap-4">
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Total Scanned"
-            value={summary?.total_scanned || 0}
-            delta={0}
-            accentColor="text-status-scanned"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Fined"
-            value={summary?.total_fined || 0}
-            delta={0}
-            accentColor="text-status-fined"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Disputed"
-            value={summary?.total_disputed || 0}
-            delta={0}
-            accentColor="text-status-disputed"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Clamped"
-            value={summary?.total_clamped || 0}
-            delta={0}
-            accentColor="text-status-clamped"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Towed"
-            value={summary?.total_towed || 0}
-            delta={0}
-            accentColor="text-status-towed"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Impounded"
-            value={summary?.total_impounded || 0}
-            delta={0}
-            accentColor="text-status-impounded"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Total Bookings"
-            value={summary?.total_bookings || 0}
-            delta={0}
-            accentColor="text-status-booked"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Booking Hours"
-            value={summary?.total_booking_hours || 0}
-            delta={0}
-            format="decimal"
-            accentColor="text-status-booked font-semibold"
-          />
-        </div>
-        <div className="xl:col-span-1">
-          <KPICard
-            label="Revenue"
-            value={summary?.total_revenue || 0}
-            delta={0}
-            format="currency"
-            accentColor="text-status-cleared"
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <KPICard
+          label="Total Scanned Vehicles"
+          value={summary?.total_scanned || 0}
+          description="Total scanned plates count"
+          accentHex="#60A5FA"
+          icon={<Car className="w-4 h-4" />}
+          watermarkIcon={Car}
+        />
+        <KPICard
+          label="Vehicles Fined"
+          value={summary?.total_fined || 0}
+          description="Vehicles flagged with active fines"
+          accentHex="#F87171"
+          icon={<AlertTriangle className="w-4 h-4" />}
+          watermarkIcon={AlertTriangle}
+        />
+        <KPICard
+          label="Disputed Fines"
+          value={summary?.total_disputed || 0}
+          description="Fines currently under dispute"
+          accentHex="#FBBF24"
+          icon={<Scale className="w-4 h-4" />}
+          watermarkIcon={Scale}
+        />
+        <KPICard
+          label="Clamped Vehicles"
+          value={summary?.total_clamped || 0}
+          description="Vehicles clamped for violations"
+          accentHex="#FB923C"
+          icon={<Lock className="w-4 h-4" />}
+          watermarkIcon={Lock}
+        />
+        <KPICard
+          label="Towed Vehicles"
+          value={summary?.total_towed || 0}
+          description="Vehicles towed from restriction zones"
+          accentHex="#C084FC"
+          icon={<Truck className="w-4 h-4" />}
+          watermarkIcon={Truck}
+        />
+        <KPICard
+          label="Impounded Vehicles"
+          value={summary?.total_impounded || 0}
+          description="Vehicles impounded in depots"
+          accentHex="#F43F5E"
+          icon={<FileText className="w-4 h-4" />}
+          watermarkIcon={FileText}
+        />
+        <KPICard
+          label="Total Bookings"
+          value={summary?.total_bookings || 0}
+          description="Approved parking bookings count"
+          accentHex="#34D399"
+          icon={<CheckCircle2 className="w-4 h-4" />}
+          watermarkIcon={CheckCircle2}
+        />
+        <KPICard
+          label="Total Booking Hours"
+          value={summary?.total_booking_hours || 0}
+          description="Aggregated parking hours"
+          format="decimal"
+          accentHex="#60A5FA"
+          icon={<Clock className="w-4 h-4" />}
+          watermarkIcon={Clock}
+        />
+        <KPICard
+          label="Total Revenue"
+          value={summary?.total_revenue || 0}
+          description="Fines and bookings collection"
+          format="currency"
+          accentHex="#EAB308"
+          icon={<Coins className="w-4 h-4" />}
+          watermarkIcon={Coins}
+        />
       </div>
 
       {/* Analytical Charts Row (Bento Grid) */}
@@ -496,8 +498,8 @@ export const Dashboard: React.FC = () => {
               <tr className="border-b border-dark-border/60 text-text-muted font-bold uppercase tracking-wider">
                 <th className="py-2.5 px-3">Plate</th>
                 <th className="py-2.5 px-3">Capture Time</th>
-                <th className="py-2.5 px-3">Location</th>
-                <th className="py-2.5 px-3">Category / Details</th>
+                <th className="py-2.5 px-3 hidden sm:table-cell">Location</th>
+                <th className="py-2.5 px-3 hidden md:table-cell">Category / Details</th>
                 <th className="py-2.5 px-3">Enforcement</th>
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
@@ -509,12 +511,12 @@ export const Dashboard: React.FC = () => {
                     {item.anpr_text}
                   </td>
                   <td className="py-2.5 px-3 font-tabular">
-                    {new Date(item.captured_at).toLocaleString()}
+                    {formatDateTime(item.captured_at)}
                   </td>
-                  <td className="py-2.5 px-3">
+                  <td className="py-2.5 px-3 hidden sm:table-cell">
                     {item.camera_location}
                   </td>
-                  <td className="py-2.5 px-3 text-text-muted">
+                  <td className="py-2.5 px-3 hidden md:table-cell text-text-muted">
                     {item.vehicle_colour} {item.vehicle_make} {item.vehicle_model}
                   </td>
                   <td className="py-2.5 px-3">

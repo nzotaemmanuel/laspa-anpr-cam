@@ -130,7 +130,7 @@ export const VehicleDetail: React.FC = () => {
   const ocrConfidenceScore = isLowConfidence ? 65 : 95; // Represented percentage mapping
 
   return (
-    <div className="flex flex-col gap-6 p-6 text-left">
+    <div className="flex flex-col gap-6 p-4 md:p-6 text-left">
       {/* Breadcrumbs / Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div className="flex items-center gap-3">

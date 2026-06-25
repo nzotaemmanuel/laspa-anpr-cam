@@ -4,7 +4,7 @@ import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
 import { StatusBadge } from '../components/StatusBadge';
 import { formatImageSrc } from '../components/PlateImage';
-import { Search, MapPin, ShieldAlert, Eye, Settings2 } from 'lucide-react';
+import { Search, MapPin, ShieldAlert, Eye, Settings2, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { DetectionEvent } from '../types';
 import { formatDateTime } from '../utils/time';
@@ -29,6 +29,8 @@ export const Vehicles: React.FC = () => {
   const [searchPlate, setSearchPlate] = useState(vehiclesFilters.plate || '');
   const [filterZone, setFilterZone] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');
+  const [filterFrom, setFilterFrom] = useState<string>(vehiclesFilters.from || '');
+  const [filterTo, setFilterTo] = useState<string>(vehiclesFilters.to || '');
 
   // Initial load
   useEffect(() => {
@@ -40,12 +42,21 @@ export const Vehicles: React.FC = () => {
   // Fetch when filters or page changes
   useEffect(() => {
     fetchVehicles();
-  }, [vehiclesFilters.page, vehiclesFilters.limit, vehiclesFilters.zone, vehiclesFilters.status]);
+  }, [
+    vehiclesFilters.page, 
+    vehiclesFilters.limit, 
+    vehiclesFilters.zone, 
+    vehiclesFilters.status, 
+    vehiclesFilters.from, 
+    vehiclesFilters.to
+  ]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setVehiclesFilters({ 
       plate: searchPlate.trim() || undefined,
+      from: filterFrom || undefined,
+      to: filterTo || undefined,
       page: 1 // Reset to page 1 on new search
     });
     fetchVehicles();
@@ -67,6 +78,22 @@ export const Vehicles: React.FC = () => {
     }
   };
 
+  const handleDateChange = (key: 'from' | 'to', value: string) => {
+    if (key === 'from') {
+      setFilterFrom(value);
+      setVehiclesFilters({ 
+        from: value || undefined,
+        page: 1
+      });
+    } else {
+      setFilterTo(value);
+      setVehiclesFilters({ 
+        to: value || undefined,
+        page: 1
+      });
+    }
+  };
+
   // Define Columns for DataTable
   const columns: Column<DetectionEvent>[] = [
     {
@@ -79,11 +106,6 @@ export const Vehicles: React.FC = () => {
           to={`/vehicles/${row.event_id}`} 
           className="hover:text-brand-accent hover:underline flex items-center gap-1.5"
         >
-          {row.country_short && (
-            <span className="text-[9px] bg-slate-900 text-slate-400 border border-slate-750 px-1 py-0.5 rounded leading-none">
-              {row.country_short}
-            </span>
-          )}
           {row.anpr_text}
         </Link>
       ),
@@ -108,6 +130,8 @@ export const Vehicles: React.FC = () => {
     {
       key: 'vehicle_image_url',
       label: 'Vehicle Preview',
+      headerClassName: 'hidden md:table-cell',
+      cellClassName: 'hidden md:table-cell',
       render: (row) => (
         row.vehicle_image_url ? (
           <div className="w-16 h-10 rounded border border-dark-border bg-black/40 overflow-hidden relative group">
@@ -133,6 +157,8 @@ export const Vehicles: React.FC = () => {
       key: 'camera_location',
       label: 'Zone Location',
       sortable: true,
+      headerClassName: 'hidden sm:table-cell',
+      cellClassName: 'hidden sm:table-cell',
       render: (row) => (
         <span className="text-xs text-slate-300">
           {row.camera_location}
@@ -152,6 +178,8 @@ export const Vehicles: React.FC = () => {
     {
       key: 'officer_id',
       label: 'Officer',
+      headerClassName: 'hidden lg:table-cell',
+      cellClassName: 'hidden lg:table-cell',
       render: (row) => (
         <span className="text-xs text-slate-400 truncate max-w-[80px]" title={row.officer_id || ''}>
           {row.officer_id || '-'}
@@ -190,7 +218,7 @@ export const Vehicles: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 p-4 md:p-6">
       {/* Header bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div className="text-left">
@@ -223,8 +251,8 @@ export const Vehicles: React.FC = () => {
             </div>
           </div>
 
-          {/* Zone Selector (3 Cols) */}
-          <div className="lg:col-span-3 text-left">
+          {/* Zone Selector (4 Cols) */}
+          <div className="lg:col-span-4 text-left">
             <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">Zone Location</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
@@ -243,8 +271,8 @@ export const Vehicles: React.FC = () => {
             </div>
           </div>
 
-          {/* Status Selector (3 Cols) */}
-          <div className="lg:col-span-3 text-left">
+          {/* Status Selector (4 Cols) */}
+          <div className="lg:col-span-4 text-left">
             <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">Enforcement Status</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
@@ -264,6 +292,38 @@ export const Vehicles: React.FC = () => {
                 <option value="BOOKED">Booked</option>
                 <option value="CLEARED">Cleared</option>
               </select>
+            </div>
+          </div>
+
+          {/* From Date (5 Cols) */}
+          <div className="lg:col-span-5 text-left">
+            <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">From Date</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
+                <Calendar className="w-4 h-4" />
+              </span>
+              <input
+                type="date"
+                value={filterFrom}
+                onChange={(e) => handleDateChange('from', e.target.value)}
+                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+              />
+            </div>
+          </div>
+
+          {/* To Date (5 Cols) */}
+          <div className="lg:col-span-5 text-left">
+            <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">To Date</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
+                <Calendar className="w-4 h-4" />
+              </span>
+              <input
+                type="date"
+                value={filterTo}
+                onChange={(e) => handleDateChange('to', e.target.value)}
+                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+              />
             </div>
           </div>
 

@@ -1,109 +1,106 @@
 import React from 'react';
-import { AreaChart, Area, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface KPICardProps {
   label: string;
   value: string | number;
-  delta?: number; // percentage change, e.g. +12.5 or -5.2
-  trendData?: number[]; // array of numbers representing recent history
-  accentColor?: string; // Tailwind border/text tint class
+  description?: string;
   format?: 'integer' | 'decimal' | 'currency';
   currencySymbol?: string;
+  icon?: React.ReactNode;
+  watermarkIcon?: React.ComponentType<any>;
+  accentHex?: string;
 }
 
 export const KPICard: React.FC<KPICardProps> = ({
   label,
   value,
-  delta,
-  trendData = [30, 45, 35, 50, 40, 60, 55, 70], // default sparkline data
-  accentColor = 'text-brand-accent',
+  description,
   format = 'integer',
   currencySymbol = '₦',
+  icon,
+  watermarkIcon: WatermarkIcon,
+  accentHex,
 }) => {
-  const isPositiveDelta = delta ? delta >= 0 : true;
+  const stroke = accentHex || '#6366F1';
 
-  // Format value
   const formattedValue = () => {
     if (typeof value === 'string') return value;
     if (format === 'currency') {
       return `${currencySymbol}${value.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`;
     }
     if (format === 'decimal') {
-      return value.toLocaleString(undefined, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      });
+      return value.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     }
     return value.toLocaleString();
   };
 
-  // Prepare recharts format
-  const chartData = trendData.map((val, idx) => ({ id: idx, val }));
-
-  // Map colors
-  const getGradientColor = () => {
-    if (accentColor.includes('fined') || accentColor.includes('impounded')) return '#EF4444';
-    if (accentColor.includes('cleared')) return '#22C55E';
-    if (accentColor.includes('clamped') || accentColor.includes('disputed')) return '#F97316';
-    if (accentColor.includes('booked')) return '#0EA5E9';
-    return '#3B82F6'; // Default brand accent
-  };
-
-  const strokeColor = getGradientColor();
-
   return (
-    <div className="glass-panel glass-panel-hover rounded-xl p-5 flex flex-col justify-between min-h-[140px] text-left">
-      {/* Label and Delta */}
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-xs font-semibold text-text-muted uppercase tracking-wider line-clamp-1">
+    <div
+      className="glass-panel rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between text-left transition-all duration-300 group"
+      style={{ 
+        minHeight: 140, 
+        border: '1px solid var(--border-subtle)',
+        background: 'var(--bg-surface)' 
+      }}
+    >
+      {/* Background Watermark Icon */}
+      {WatermarkIcon && (
+        <div 
+          className="absolute right-4 bottom-2 transition-all duration-300 group-hover:scale-110 pointer-events-none z-0"
+          style={{ 
+            color: stroke, 
+            opacity: 0.05 
+          }}
+        >
+          <WatermarkIcon className="w-24 h-24 stroke-[1.2]" />
+        </div>
+      )}
+
+      {/* Top Row: Label and Badge Icon */}
+      <div className="flex items-start justify-between gap-4 z-10">
+        <span
+          className="text-[10px] font-bold uppercase tracking-widest"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {label}
         </span>
-        
-        {delta !== undefined && (
-          <span className={`inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full ${
-            isPositiveDelta 
-              ? 'bg-status-cleared/15 text-status-cleared' 
-              : 'bg-status-fined/15 text-status-fined'
-          }`}>
-            {isPositiveDelta ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-            {isPositiveDelta ? '+' : ''}{delta}%
+
+        {icon && (
+          <span
+            className="flex items-center justify-center w-8 h-8 rounded-xl border transition-all duration-300"
+            style={{
+              background: `${stroke}15`,
+              borderColor: `${stroke}30`,
+              color: stroke,
+            }}
+          >
+            {icon}
           </span>
         )}
       </div>
 
-      {/* Main Value and Sparkline */}
-      <div className="flex items-end justify-between mt-3 gap-4">
-        <div className={`text-2xl lg:text-3xl font-bold font-tabular leading-none text-slate-100 ${accentColor}`}>
+      {/* Middle/Bottom: Value and Description */}
+      <div className="mt-4 flex flex-col gap-1 z-10">
+        <span
+          className="text-3xl font-extrabold font-tabular leading-none tracking-tight"
+          style={{ color: 'var(--text-primary)' }}
+        >
           {formattedValue()}
-        </div>
-
-        {/* Sparkline chart */}
-        <div className="w-24 h-10 overflow-hidden shrink-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
-              <defs>
-                <linearGradient id={`gradient-${label.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={strokeColor} stopOpacity={0.25} />
-                  <stop offset="100%" stopColor={strokeColor} stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <Area
-                type="monotone"
-                dataKey="val"
-                stroke={strokeColor}
-                strokeWidth={1.5}
-                fill={`url(#gradient-${label.replace(/\s+/g, '')})`}
-                dot={false}
-                isAnimationActive={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        </span>
+        {description && (
+          <span
+            className="text-[11px] font-semibold mt-1"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {description}
+          </span>
+        )}
       </div>
     </div>
   );
 };
+
+export default KPICard;

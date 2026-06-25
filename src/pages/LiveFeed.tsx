@@ -181,7 +181,7 @@ export const LiveFeed: React.FC = () => {
                 <div className="text-center">
                   <h4 className="text-sm font-semibold text-slate-300">Awaiting Plate Captures</h4>
                   <p className="text-xs text-text-muted mt-1 max-w-[280px]">
-                    The WebSocket is active. Once the XCW-MICROCAM-02 reports a scan, it will pop up here instantly.
+                    The WebSocket is active. Once an ANPR camera reports a scan, it will pop up here instantly.
                   </p>
                 </div>
               </div>

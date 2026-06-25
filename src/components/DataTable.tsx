@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown, Loader2 } from 'lucide-react';
 
 export interface Column<T> {
@@ -39,6 +39,12 @@ export function DataTable<T>({
   limit = 50,
   onLimitChange,
 }: DataTableProps<T>) {
+  const [pageInput, setPageInput] = useState(currentPage.toString());
+
+  useEffect(() => {
+    setPageInput(currentPage.toString());
+  }, [currentPage]);
+
   const handleHeaderClick = (column: Column<T>) => {
     if (!column.sortable || !onSortChange) return;
     const isCurrent = sortKey === column.key;
@@ -51,27 +57,49 @@ export function DataTable<T>({
     const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
-
-    if (end - start + 1 < maxVisible) {
-      start = Math.max(1, end - maxVisible + 1);
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
+    if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
     return pages;
+  };
+
+  const handleGoToPage = (e: React.FormEvent) => {
+    e.preventDefault();
+    const pageNum = parseInt(pageInput, 10);
+    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+      onPageChange?.(pageNum);
+    } else {
+      setPageInput(currentPage.toString());
+    }
   };
 
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Table Container */}
-      <div className="relative rounded-xl overflow-hidden border border-dark-border bg-dark-surface/40 shadow-lg min-h-[200px]">
+      <div
+        className="relative rounded-2xl overflow-hidden"
+        style={{
+          background: 'var(--bg-surface)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-card)',
+          minHeight: 200,
+        }}
+      >
         {/* Loading Overlay */}
         {loading && (
-          <div className="absolute inset-0 bg-dark-bg/60 backdrop-blur-xs z-10 flex items-center justify-center">
-            <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-5 py-3 rounded-xl shadow-xl">
-              <Loader2 className="w-5 h-5 text-brand-accent animate-spin" />
-              <span className="text-sm font-semibold text-slate-200">Querying records...</span>
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center"
+            style={{ background: 'rgba(8,12,24,0.55)', backdropFilter: 'blur(6px)' }}
+          >
+            <div
+              className="flex items-center gap-2.5 px-5 py-3 rounded-xl"
+              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-muted)' }}
+            >
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#6366F1' }} />
+              <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
+                Querying records…
+              </span>
             </div>
           </div>
         )}
@@ -79,36 +107,57 @@ export function DataTable<T>({
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-900 border-b border-dark-border text-xs font-bold text-text-muted uppercase tracking-wider">
+              <tr className="table-header">
                 {columns.map((col) => (
                   <th
                     key={col.key}
                     onClick={() => handleHeaderClick(col)}
-                    className={`px-4 py-3.5 select-none ${col.sortable ? 'cursor-pointer hover:text-slate-100 transition-colors' : ''} ${col.headerClassName || ''}`}
+                    className={`px-4 py-3.5 select-none whitespace-nowrap ${
+                      col.sortable ? 'cursor-pointer' : ''
+                    } ${col.headerClassName || ''}`}
+                    style={{
+                      transition: 'color 0.15s',
+                      color: sortKey === col.key ? '#A5B4FC' : 'var(--text-muted)',
+                    }}
+                    onMouseEnter={e => col.sortable && ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+                    onMouseLeave={e => col.sortable && ((e.currentTarget as HTMLElement).style.color = sortKey === col.key ? '#A5B4FC' : 'var(--text-muted)')}
                   >
                     <div className="flex items-center gap-1.5">
                       {col.label}
                       {col.sortable && onSortChange && (
-                        <ArrowUpDown className={`w-3.5 h-3.5 transition-colors ${sortKey === col.key ? 'text-brand-accent' : 'text-text-muted/40'}`} />
+                        <ArrowUpDown
+                          className="w-3 h-3 transition-colors"
+                          style={{ color: sortKey === col.key ? '#6366F1' : 'var(--text-muted)', opacity: sortKey === col.key ? 1 : 0.45 }}
+                        />
                       )}
                     </div>
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-dark-border/40 text-sm text-slate-300">
+            <tbody>
               {data.length === 0 && !loading ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-4 py-12 text-center text-text-muted italic">
+                  <td
+                    colSpan={columns.length}
+                    className="px-4 py-16 text-center text-sm italic"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
                     No matching records found.
                   </td>
                 </tr>
               ) : (
                 data.map((row, rowIdx) => (
-                  <tr key={rowIdx} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={rowIdx} className="table-row">
                     {columns.map((col) => (
-                      <td key={col.key} className={`px-4 py-3.5 align-middle ${col.cellClassName || ''}`}>
-                        {col.render ? col.render(row) : (row as any)[col.key]?.toString() || '-'}
+                      <td
+                        key={col.key}
+                        className={`px-4 py-3.5 align-middle text-sm ${col.cellClassName || ''}`}
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {col.render ? col.render(row) : (row as any)[col.key]?.toString() || (
+                          <span style={{ color: 'var(--text-muted)' }}>—</span>
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -119,75 +168,139 @@ export function DataTable<T>({
         </div>
       </div>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && onPageChange && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-1 border border-dark-border bg-slate-900/20 rounded-xl">
+      {/* Pagination */}
+      {totalPages >= 1 && onPageChange && (
+        <div
+          className="flex flex-col lg:flex-row items-center justify-between gap-4 px-4 py-3 rounded-xl"
+          style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            backdropFilter: 'blur(12px)',
+          }}
+        >
           {/* Status count */}
-          <div className="text-xs text-text-muted font-semibold">
-            Showing <span className="text-slate-300 font-bold">{data.length}</span> of{' '}
-            <span className="text-slate-300 font-bold">{totalItems}</span> total entries
-          </div>
+          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+            Showing{' '}
+            <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{data.length}</span>
+            {' '}of{' '}
+            <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{totalItems}</span>
+            {' '}entries
+          </span>
 
-          {/* Page numbers */}
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => onPageChange(1)}
-              disabled={currentPage === 1}
-              className="p-1.5 rounded-lg border border-dark-border text-text-muted hover:text-slate-100 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            >
-              <ChevronsLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onPageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="p-1.5 rounded-lg border border-dark-border text-text-muted hover:text-slate-100 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
+          {/* Page navigation and search */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-1">
+              {[
+                { icon: <ChevronsLeft className="w-3.5 h-3.5" />, onClick: () => onPageChange(1), disabled: currentPage === 1 },
+                { icon: <ChevronLeft className="w-3.5 h-3.5" />, onClick: () => onPageChange(currentPage - 1), disabled: currentPage === 1 },
+              ].map((btn, i) => (
+                <button
+                  key={i}
+                  onClick={btn.onClick}
+                  disabled={btn.disabled}
+                  className="p-1.5 rounded-lg cursor-pointer disabled:opacity-30"
+                  style={{
+                    background: 'var(--bg-surface-2)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-secondary)',
+                    transition: 'border-color 0.15s, color 0.15s',
+                  }}
+                >
+                  {btn.icon}
+                </button>
+              ))}
 
-            {getPageNumbers().map((pageNum) => (
+              {getPageNumbers().map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => onPageChange(pageNum)}
+                  className="w-8 h-8 rounded-lg text-xs font-bold cursor-pointer transition-all"
+                  style={
+                    currentPage === pageNum
+                      ? {
+                          background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+                          color: '#fff',
+                          boxShadow: '0 2px 10px rgba(99,102,241,0.45)',
+                          border: 'none',
+                        }
+                      : {
+                          background: 'var(--bg-surface-2)',
+                          border: '1px solid var(--border-subtle)',
+                          color: 'var(--text-muted)',
+                        }
+                  }
+                >
+                  {pageNum}
+                </button>
+              ))}
+
+              {[
+                { icon: <ChevronRight className="w-3.5 h-3.5" />, onClick: () => onPageChange(currentPage + 1), disabled: currentPage === totalPages || totalPages === 0 },
+                { icon: <ChevronsRight className="w-3.5 h-3.5" />, onClick: () => onPageChange(totalPages), disabled: currentPage === totalPages || totalPages === 0 },
+              ].map((btn, i) => (
+                <button
+                  key={i}
+                  onClick={btn.onClick}
+                  disabled={btn.disabled}
+                  className="p-1.5 rounded-lg cursor-pointer disabled:opacity-30"
+                  style={{
+                    background: 'var(--bg-surface-2)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  {btn.icon}
+                </button>
+              ))}
+            </div>
+
+            {/* Go to page form */}
+            <form onSubmit={handleGoToPage} className="flex items-center gap-1.5 border-l border-dark-border/40 pl-3">
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>Go to:</span>
+              <input
+                type="number"
+                min={1}
+                max={totalPages || 1}
+                value={pageInput}
+                onChange={(e) => setPageInput(e.target.value)}
+                className="w-12 h-8 rounded-lg text-xs font-bold text-center px-1"
+                style={{
+                  background: 'var(--bg-surface-2)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                  outline: 'none',
+                }}
+                placeholder="Page"
+              />
               <button
-                key={pageNum}
-                onClick={() => onPageChange(pageNum)}
-                className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  currentPage === pageNum
-                    ? 'bg-brand-accent text-white shadow-md shadow-brand-accent/20'
-                    : 'border border-dark-border text-text-muted hover:text-slate-100 hover:bg-slate-800'
-                }`}
+                type="submit"
+                className="h-8 px-2.5 rounded-lg text-xs font-bold cursor-pointer transition-all"
+                style={{
+                  background: 'var(--bg-surface-2)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                }}
               >
-                {pageNum}
+                Go
               </button>
-            ))}
-
-            <button
-              onClick={() => onPageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="p-1.5 rounded-lg border border-dark-border text-text-muted hover:text-slate-100 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onPageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              className="p-1.5 rounded-lg border border-dark-border text-text-muted hover:text-slate-100 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            >
-              <ChevronsRight className="w-4 h-4" />
-            </button>
+            </form>
           </div>
 
-          {/* Page limit selector */}
+          {/* Limit selector */}
           {onLimitChange && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-text-muted font-semibold">Show:</span>
+              <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Show:</span>
               <select
                 value={limit}
                 onChange={(e) => onLimitChange(parseInt(e.target.value))}
-                className="bg-slate-900 border border-dark-border rounded-lg text-xs font-bold text-slate-300 px-2.5 py-1 focus:border-brand-accent focus:outline-none"
+                className="text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer"
+                style={{
+                  background: 'var(--bg-surface-2)',
+                  border: '1px solid var(--border-muted)',
+                  color: 'var(--text-secondary)',
+                }}
               >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
+                {[10, 20, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
               </select>
             </div>
           )}

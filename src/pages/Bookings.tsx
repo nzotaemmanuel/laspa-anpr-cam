@@ -4,6 +4,7 @@ import type { Booking } from '../types';
 import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
 import { Plus, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { formatDateTime } from '../utils/time';
 
 
 export const Bookings: React.FC = () => {
@@ -29,10 +30,49 @@ export const Bookings: React.FC = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
+  // Pagination & Sorting State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+  const [sortKey, setSortKey] = useState<string>('start_time');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
   useEffect(() => {
     fetchBookings();
     fetchZones();
   }, []);
+
+  // Sort bookings client-side
+  const sortedBookings = React.useMemo(() => {
+    return [...bookings].sort((a, b) => {
+      const aVal = (a as any)[sortKey];
+      const bVal = (b as any)[sortKey];
+      if (aVal === bVal) return 0;
+      if (aVal === undefined || aVal === null) return 1;
+      if (bVal === undefined || bVal === null) return -1;
+      
+      let comparison = 0;
+      if (typeof aVal === 'string') {
+        comparison = aVal.localeCompare(bVal);
+      } else {
+        comparison = aVal > bVal ? 1 : -1;
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [bookings, sortKey, sortDirection]);
+
+  // Paginated bookings
+  const totalItems = sortedBookings.length;
+  const totalPages = Math.ceil(totalItems / limit) || 1;
+  const paginatedBookings = React.useMemo(() => {
+    const startIdx = (currentPage - 1) * limit;
+    return sortedBookings.slice(startIdx, startIdx + limit);
+  }, [sortedBookings, currentPage, limit]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
 
   // Update zoneId default when zones load
   useEffect(() => {
@@ -46,7 +86,7 @@ export const Bookings: React.FC = () => {
     try {
       const start = new Date(startTime);
       const end = new Date(start.getTime() + duration * 60 * 60 * 1000);
-      return end.toLocaleString();
+      return formatDateTime(end.toISOString());
     } catch {
       return '-';
     }
@@ -101,6 +141,7 @@ export const Bookings: React.FC = () => {
         
         // Reload list
         fetchBookings();
+        setCurrentPage(1);
       } else {
         setFormError('Failed to register booking. Check API status.');
       }
@@ -130,8 +171,10 @@ export const Bookings: React.FC = () => {
     },
     {
       key: 'bay_number',
-      label: 'Bay / Zone',
+      label: 'Location',
       sortable: true,
+      headerClassName: 'hidden sm:table-cell',
+      cellClassName: 'hidden sm:table-cell',
       render: (row) => (
         <span className="text-xs text-slate-300 font-semibold">
           Bay {row.bay_number} ({row.zone_id})
@@ -143,21 +186,23 @@ export const Bookings: React.FC = () => {
       label: 'Start Time',
       sortable: true,
       cellClassName: 'font-tabular text-xs',
-      render: (row) => new Date(row.start_time).toLocaleString(),
+      render: (row) => formatDateTime(row.start_time),
     },
     {
       key: 'duration_hours',
       label: 'Duration',
       sortable: true,
-      cellClassName: 'font-tabular text-xs',
+      headerClassName: 'hidden sm:table-cell',
+      cellClassName: 'hidden sm:table-cell font-tabular text-xs',
       render: (row) => `${row.duration_hours} hrs`,
     },
     {
       key: 'end_time',
       label: 'End Time',
       sortable: true,
-      cellClassName: 'font-tabular text-xs',
-      render: (row) => new Date(row.end_time).toLocaleString(),
+      headerClassName: 'hidden md:table-cell',
+      cellClassName: 'hidden md:table-cell font-tabular text-xs',
+      render: (row) => formatDateTime(row.end_time),
     },
     {
       key: 'status',
@@ -179,12 +224,14 @@ export const Bookings: React.FC = () => {
     {
       key: 'officer_id',
       label: 'Officer',
-      render: (row) => <span className="text-xs text-text-muted">{row.officer_id}</span>,
+      headerClassName: 'hidden lg:table-cell',
+      cellClassName: 'hidden lg:table-cell text-xs text-text-muted',
+      render: (row) => <span>{row.officer_id}</span>,
     },
   ];
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 p-4 md:p-6">
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-dark-border/40 pb-5">
         <div className="text-left">
@@ -346,11 +393,23 @@ export const Bookings: React.FC = () => {
 
           <DataTable
             columns={columns}
-            data={bookings}
+            data={paginatedBookings}
             loading={bookingsLoading}
-            totalItems={bookings.length}
-            currentPage={1}
-            totalPages={1}
+            totalItems={totalItems}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            onLimitChange={(newLimit) => {
+              setLimit(newLimit);
+              setCurrentPage(1);
+            }}
+            onSortChange={(key, direction) => {
+              setSortKey(key);
+              setSortDirection(direction);
+            }}
+            sortKey={sortKey}
+            sortDirection={sortDirection}
+            limit={limit}
           />
         </div>
       )}

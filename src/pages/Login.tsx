@@ -39,7 +39,7 @@ export const Login: React.FC = () => {
             <Shield className="w-8 h-8" />
           </div>
           <h1 className="text-xl font-bold text-slate-100 tracking-tight leading-tight">
-            LASPA ANPR System
+            LASPA ANPR Console
           </h1>
           <p className="text-xs text-text-muted mt-1.5 font-semibold uppercase tracking-wider">
             Enforcement Management Gateway

@@ -22,7 +22,7 @@ export const PlateImage: React.FC<PlateImageProps> = ({
   anprText,
   plateImageUrl,
   confidenceMode,
-  countryShort,
+  countryShort: _countryShort,
   stateShort,
   size = 'md',
 }) => {
@@ -56,11 +56,6 @@ export const PlateImage: React.FC<PlateImageProps> = ({
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between gap-2">
           <div className="bg-slate-900 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-2 font-plate tracking-wider shadow-inner w-full justify-center">
-            {countryShort && (
-              <span className="text-[10px] bg-brand-accent/20 text-brand-accent px-1.5 py-0.5 rounded font-sans font-bold">
-                {countryShort.toUpperCase()}
-              </span>
-            )}
             <span className={`font-mono text-slate-100 ${
               size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : 'text-xl'
             }`}>

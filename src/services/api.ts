@@ -120,11 +120,25 @@ function getCorrelationId(filename: string): string | null {
 }
 
 /**
+ * Ensure any ISO timestamp from the backend that lacks an explicit offset
+ * is treated as UTC (ends with 'Z').
+ */
+function ensureUtcTimestamp(timestamp: string): string {
+  if (!timestamp) return new Date().toISOString();
+  const trimmed = timestamp.trim();
+  if (!/[zZ]$/.test(trimmed) && !/[+-]\d{2}:?\d{2}$/.test(trimmed)) {
+    return `${trimmed}Z`;
+  }
+  return trimmed;
+}
+
+/**
  * Convert the camera's frametime string ("20260618T133530+0100")
  * to a proper ISO 8601 string.  Falls back to the log's own timestamp.
  */
 function parseFrameTime(frametime?: string, fallback?: string): string {
-  if (!frametime) return fallback ?? new Date().toISOString();
+  const fallbackUtc = fallback ? ensureUtcTimestamp(fallback) : new Date().toISOString();
+  if (!frametime) return fallbackUtc;
   try {
     // Format: YYYYMMDDTHHmmss±HHMM  →  YYYY-MM-DDTHH:mm:ss±HH:MM
     const match = frametime.match(
@@ -136,10 +150,11 @@ function parseFrameTime(frametime?: string, fallback?: string): string {
       return new Date(`${yr}-${mo}-${dy}T${hh}:${mm}:${ss}${tzFmt}`).toISOString();
     }
     // Already parseable?
-    const d = new Date(frametime);
+    const cleanFrametime = ensureUtcTimestamp(frametime);
+    const d = new Date(cleanFrametime);
     if (!isNaN(d.getTime())) return d.toISOString();
   } catch { /* ignore */ }
-  return fallback ?? new Date().toISOString();
+  return fallbackUtc;
 }
 
 /** Map the camera's direction code to the app's union literal. */
@@ -157,9 +172,11 @@ function mapDirection(code?: string): 'IN' | 'OUT' | 'UNKNOWN' {
 function adaptCorrelatedToDetectionEvent(entry: CorrelatedEvent): DetectionEvent {
   const result = entry.jsonData;
 
-  const capturedAt = result?.capture?.frametime
-    ? parseFrameTime(result.capture.frametime, entry.timestamp)
-    : entry.timestamp;
+  const capturedAt = ensureUtcTimestamp(
+    result?.capture?.frametime
+      ? parseFrameTime(result.capture.frametime, entry.timestamp)
+      : entry.timestamp
+  );
 
   const cameraId = result?.cameraid ?? 'UNKNOWN';
   const cameraName = cameraId.split('/')[0]; // e.g. "FXS_CM_FE_01191574A"
