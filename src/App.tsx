@@ -164,7 +164,7 @@ const AppLayout: React.FC = () => {
             </div>
             {!collapsed && (
               <div className="min-w-0">
-                <div className="text-sm font-extrabold tracking-tight leading-none gradient-text truncate">
+                <div className="text-sm font-extrabold tracking-tight leading-none logo-text truncate">
                   LASPA ANPR
                 </div>
                 <div className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--text-muted)' }}>
@@ -255,7 +255,7 @@ const AppLayout: React.FC = () => {
             <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-3">
                 <img src={laspeLogo} alt="LASPA" className="w-9 h-9 rounded-xl object-cover" />
-                <span className="font-extrabold text-sm gradient-text">LASPA ANPR Console</span>
+                <span className="font-extrabold text-sm logo-text">LASPA ANPR Console</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
@@ -314,7 +314,7 @@ const AppLayout: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <img src={laspeLogo} alt="LASPA" className="w-7 h-7 rounded-lg object-cover" />
-            <span className="font-extrabold text-sm gradient-text">LASPA ANPR Console</span>
+            <span className="font-extrabold text-sm logo-text">LASPA ANPR Console</span>
           </div>
 
           <div className="flex items-center gap-2">

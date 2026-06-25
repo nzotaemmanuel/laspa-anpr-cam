@@ -25,8 +25,6 @@ export const Dashboard: React.FC = () => {
     fetchVehicles,
     fetchCameras,
     fetchZones,
-    currentUser,
-    role,
   } = useAppStore();
 
   const [dateRangeType, setDateRangeType] = useState<'today' | 'week' | 'month' | 'custom'>('month');
@@ -193,22 +191,9 @@ export const Dashboard: React.FC = () => {
           <h1 className="text-2xl font-extrabold text-white mt-3.5 tracking-tight leading-tight">
             Lagos State Parking Authority (LASPA)
           </h1>
-          <p className="text-xs text-slate-300 mt-2 max-w-xl leading-relaxed font-medium">
+          <p className="text-xs mt-2 max-w-xl leading-relaxed font-medium" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
             Monitor real-time ANPR camera ingestion feeds, penalty violations log, parking reservations bookings, and dynamic revenue metrics across Lagos metropolitan zones.
           </p>
-        </div>
-        
-        {/* Time / Status pill */}
-        <div className="relative z-10 shrink-0 self-stretch flex flex-col justify-between items-end text-right">
-          <div className="bg-slate-900/80 backdrop-blur-md border border-dark-border/60 rounded-xl px-4 py-2 text-xs">
-            <span className="block text-[10px] text-text-muted font-bold uppercase tracking-wider">Console Operator</span>
-            <span className="font-bold text-slate-200 mt-0.5 block">{currentUser?.name || 'Administrator'}</span>
-            <span className="text-[10px] font-semibold text-brand-accent mt-0.5 block">{role} · {currentUser?.badge_number || 'BADGE-0001'}</span>
-          </div>
-          <div className="hidden md:flex items-center gap-1.5 bg-status-scanned/10 border border-status-scanned/25 text-status-scanned rounded-lg px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-status-scanned animate-pulse" />
-            Live Feed Connected
-          </div>
         </div>
       </div>
 

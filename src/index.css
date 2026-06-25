@@ -225,6 +225,20 @@
   background-clip: text;
 }
 
+.logo-text {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+:root.light .logo-text {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  color: #1D4ED8 !important; /* Royal Blue from LASPA logo */
+}
+
 /* ─── Gradient Buttons ───────────────────────────────────────────────────────── */
 .btn-primary {
   background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
