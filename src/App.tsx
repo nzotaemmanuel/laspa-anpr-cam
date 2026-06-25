@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react
 import { useAppStore } from './store/appStore';
 import laspeLogo from './assets/laspa-logo.png';
 import { Dashboard } from './pages/Dashboard';
-import { LiveFeed } from './pages/LiveFeed';
 import { Vehicles } from './pages/Vehicles';
 import { VehicleDetail } from './pages/VehicleDetail';
 import { Fines } from './pages/Fines';
@@ -13,7 +12,7 @@ import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 
 import {
-  LayoutDashboard, Radio, ClipboardList, Receipt, BookOpen,
+  LayoutDashboard, ClipboardList, Receipt, BookOpen,
   FileSpreadsheet, Settings as SettingsIcon, Menu, X, LogOut,
   Sun, Moon, ChevronRight, ChevronLeft,
 } from 'lucide-react';
@@ -57,7 +56,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
 // ─── Nav Items ─────────────────────────────────────────────────────────────────
 const navItems = [
   { path: '/dashboard', label: 'Dashboard',       icon: <LayoutDashboard className="w-4 h-4" />, roles: ['OFFICER','SUPERVISOR','ADMIN'] },
-  { path: '/live',      label: 'Live Stream',     icon: <Radio className="w-4 h-4" />,           roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/vehicles',  label: 'Scans Log',       icon: <ClipboardList className="w-4 h-4" />,   roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/fines',     label: 'Fines',           icon: <Receipt className="w-4 h-4" />,         roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/bookings',  label: 'Parking Bookings',icon: <BookOpen className="w-4 h-4" />,        roles: ['OFFICER','SUPERVISOR','ADMIN'] },
@@ -339,7 +337,6 @@ const AppLayout: React.FC = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/live"      element={<ProtectedRoute><LiveFeed /></ProtectedRoute>} />
             <Route path="/vehicles"  element={<ProtectedRoute><Vehicles /></ProtectedRoute>} />
             <Route path="/vehicles/:event_id" element={<ProtectedRoute><VehicleDetail /></ProtectedRoute>} />
             <Route path="/fines"     element={<ProtectedRoute><Fines /></ProtectedRoute>} />

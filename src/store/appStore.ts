@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { api, LiveFeedWebSocket } from '../services/api';
+import { api } from '../services/api';
 import type { DetectionEvent, SummaryMetrics, Fine, Booking, Camera, Zone, Officer } from '../types';
 
 interface AppFilters {
@@ -28,15 +28,7 @@ interface AppState {
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 
-  // Live Feed
-  liveEvents: DetectionEvent[];
-  feedConnectionState: 'CONNECTED' | 'RECONNECTING' | 'DISCONNECTED';
-  newEventCount: number;
-  soundEnabled: boolean;
-  setSoundEnabled: (enabled: boolean) => void;
-  clearNewEventCount: () => void;
-  initWebSocket: () => void;
-  cleanupWebSocket: () => void;
+
 
   // Summary Metrics
   summary: SummaryMetrics | null;
@@ -94,34 +86,7 @@ interface AppState {
   fetchZones: () => Promise<void>;
 }
 
-let wsClient: LiveFeedWebSocket | null = null;
-let pollIntervalId: any = null;
 
-// Audio player cache to reuse it and avoid reloading it each time
-let audioContext: AudioContext | null = null;
-const playBeep = () => {
-  try {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, audioContext.currentTime); // High pitched clean beep
-    
-    gain.gain.setValueAtTime(0.15, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3); // 300ms fadeout
-    
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.3);
-  } catch (e) {
-    console.error('Failed to play audio notification', e);
-  }
-};
 
 export const useAppStore = create<AppState>((set, get) => {
   // Listen for auth-expired event to logout cleanly
@@ -164,13 +129,7 @@ export const useAppStore = create<AppState>((set, get) => {
     authLoading: false,
     authError: null,
 
-    // Live Feed State
-    liveEvents: [],
-    feedConnectionState: 'DISCONNECTED',
-    newEventCount: 0,
-    soundEnabled: true,
-    setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
-    clearNewEventCount: () => set({ newEventCount: 0 }),
+
 
     // Summary Metrics State
     summary: null,
@@ -260,8 +219,7 @@ export const useAppStore = create<AppState>((set, get) => {
       } finally {
         api.setToken(null);
         localStorage.removeItem('anpr_auth');
-        get().cleanupWebSocket();
-        set({ currentUser: null, token: null, role: null, liveEvents: [] });
+        set({ currentUser: null, token: null, role: null });
       }
     },
 
@@ -289,122 +247,7 @@ export const useAppStore = create<AppState>((set, get) => {
       }
     },
 
-    // WebSocket & Polling Management
-    initWebSocket: () => {
-      if (wsClient) {
-        wsClient.disconnect();
-      }
 
-      wsClient = new LiveFeedWebSocket();
-      
-      wsClient.onConnecting = () => {
-        set({ feedConnectionState: 'RECONNECTING' });
-      };
-
-      wsClient.onOpen = () => {
-        set({ feedConnectionState: 'CONNECTED' });
-      };
-
-      wsClient.onClose = () => {
-        set({ feedConnectionState: 'DISCONNECTED' });
-      };
-
-      wsClient.onError = () => {
-        set({ feedConnectionState: 'DISCONNECTED' });
-      };
-
-      wsClient.onMessage = (event) => {
-        set((state) => {
-          if (state.soundEnabled) {
-            playBeep();
-          }
-
-          if (document.visibilityState === 'hidden') {
-            new Notification('ANPR Camera Alert', {
-              body: `Plate: ${event.anpr_text} scanned at ${event.camera_location}`,
-              icon: event.plate_image_url || '/favicon.ico'
-            });
-          }
-
-          const existingEvents = [...state.liveEvents];
-          if (existingEvents.some(e => e.event_id === event.event_id)) {
-            return {};
-          }
-
-          if (existingEvents.length >= 500) {
-            existingEvents.pop();
-          }
-          
-          return {
-            liveEvents: [event, ...existingEvents],
-            newEventCount: state.newEventCount + 1
-          };
-        });
-        
-        get().fetchSummary();
-      };
-
-      if (typeof window !== 'undefined' && 'Notification' in window) {
-        if (Notification.permission === 'default') {
-          Notification.requestPermission();
-        }
-      }
-
-      wsClient.connect();
-
-      // Setup Polling Fallback
-      if (pollIntervalId) {
-        clearInterval(pollIntervalId);
-      }
-
-      const pollForNewEvents = async () => {
-        try {
-          const data = await api.getVehicles({ page: 1, limit: 50 });
-          const state = get();
-          
-          const newEvents = data.items.filter(
-            (evt) => !state.liveEvents.some((existing) => existing.event_id === evt.event_id)
-          );
-
-          if (newEvents.length > 0) {
-            newEvents.sort((a, b) => new Date(a.captured_at).getTime() - new Date(b.captured_at).getTime());
-
-            set((state) => {
-              if (state.soundEnabled) {
-                playBeep();
-              }
-              
-              const merged = [...[...newEvents].reverse(), ...state.liveEvents];
-              const capped = merged.slice(0, 500);
-              
-              return {
-                liveEvents: capped,
-                newEventCount: state.newEventCount + newEvents.length
-              };
-            });
-
-            get().fetchSummary();
-          }
-        } catch (err) {
-          console.error('Failed to poll for new events', err);
-        }
-      };
-
-      pollForNewEvents();
-      pollIntervalId = setInterval(pollForNewEvents, 4000);
-    },
-
-    cleanupWebSocket: () => {
-      if (wsClient) {
-        wsClient.disconnect();
-        wsClient = null;
-      }
-      if (pollIntervalId) {
-        clearInterval(pollIntervalId);
-        pollIntervalId = null;
-      }
-      set({ feedConnectionState: 'DISCONNECTED' });
-    },
 
     // Fetch Summary Metrics
     setSummaryFilters: (filters) => {
@@ -452,11 +295,8 @@ export const useAppStore = create<AppState>((set, get) => {
           details,
         });
 
-        // Update liveEvents if it contains this event
+        // Update vehicles if it contains this event
         set((state) => {
-          const liveEvents = state.liveEvents.map((evt) =>
-            evt.event_id === eventId ? updatedEvent : evt
-          );
           const vehicles = state.vehicles.map((evt) =>
             evt.event_id === eventId ? updatedEvent : evt
           );
@@ -479,7 +319,7 @@ export const useAppStore = create<AppState>((set, get) => {
             }
           }
 
-          return { liveEvents, vehicles, summary };
+          return { vehicles, summary };
         });
         return true;
       } catch (err) {
@@ -500,13 +340,10 @@ export const useAppStore = create<AppState>((set, get) => {
         });
 
         set((state) => {
-          const liveEvents = state.liveEvents.map((evt) =>
-            evt.event_id === eventId ? updatedEvent : evt
-          );
           const vehicles = state.vehicles.map((evt) =>
             evt.event_id === eventId ? updatedEvent : evt
           );
-          return { liveEvents, vehicles };
+          return { vehicles };
         });
         return true;
       } catch (err) {
@@ -527,13 +364,10 @@ export const useAppStore = create<AppState>((set, get) => {
         });
 
         set((state) => {
-          const liveEvents = state.liveEvents.map((evt) =>
-            evt.event_id === eventId ? updatedEvent : evt
-          );
           const vehicles = state.vehicles.map((evt) =>
             evt.event_id === eventId ? updatedEvent : evt
           );
-          return { liveEvents, vehicles };
+          return { vehicles };
         });
         return true;
       } catch (err) {
