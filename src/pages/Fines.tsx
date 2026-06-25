@@ -174,7 +174,7 @@ export const Fines: React.FC = () => {
       <div className="glass-panel rounded-xl p-4">
         <form onSubmit={handleFilterSubmit} className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-12 gap-4 items-end">
           {/* Plate Search input */}
-          <div className="lg:col-span-5 text-left">
+          <div className="lg:col-span-4 text-left">
             <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">Search License Plate</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
@@ -213,7 +213,7 @@ export const Fines: React.FC = () => {
           </div>
 
           {/* Submit button */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-4">
             <button
               type="submit"
               className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"

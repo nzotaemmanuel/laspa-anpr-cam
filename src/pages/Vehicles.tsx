@@ -295,8 +295,8 @@ export const Vehicles: React.FC = () => {
             </div>
           </div>
 
-          {/* From Date (5 Cols) */}
-          <div className="lg:col-span-5 text-left">
+          {/* From Date (4 Cols) */}
+          <div className="lg:col-span-4 text-left">
             <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">From Date</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
@@ -311,8 +311,8 @@ export const Vehicles: React.FC = () => {
             </div>
           </div>
 
-          {/* To Date (5 Cols) */}
-          <div className="lg:col-span-5 text-left">
+          {/* To Date (4 Cols) */}
+          <div className="lg:col-span-4 text-left">
             <label className="block text-xs font-bold text-text-muted uppercase mb-1.5">To Date</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
@@ -327,8 +327,8 @@ export const Vehicles: React.FC = () => {
             </div>
           </div>
 
-          {/* Submit Search Button (2 Cols) */}
-          <div className="lg:col-span-2">
+          {/* Submit Search Button (4 Cols) */}
+          <div className="lg:col-span-4">
             <button
               type="submit"
               className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
