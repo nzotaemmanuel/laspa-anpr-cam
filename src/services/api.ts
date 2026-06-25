@@ -32,7 +32,19 @@ interface RawAnprResult {
     timems?: string;
     country?: string;
     state?: string;
-  };
+  } | Array<{
+    text: string;
+    confidence: string;
+    resultcnt?: string;
+    bgcolor?: string;
+    color?: string;
+    type?: string;
+    opt_speed?: string;
+    frame?: string;
+    timems?: string;
+    country?: string;
+    state?: string;
+  }>;
   mmr?: {
     make?: string;
     model?: string;
@@ -168,6 +180,55 @@ function mapDirection(code?: string): 'IN' | 'OUT' | 'UNKNOWN' {
 }
 
 /**
+ * Decodes unicode escape sequences and HTML/XML entities in plate text
+ */
+function decodePlateText(text: string): string {
+  if (!text) return '';
+  
+  let decoded = text;
+  
+  // 1. Decode Unicode escapes (both literal \\uXXXX and regular if needed)
+  if (decoded.includes('\\u') || decoded.includes('%')) {
+    try {
+      // Decode % escapes (e.g. urlencoded) if any
+      if (decoded.includes('%')) {
+        decoded = decodeURIComponent(decoded);
+      }
+      // Decode literal \\uXXXX
+      decoded = decoded.replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => {
+        return String.fromCharCode(parseInt(hex, 16));
+      });
+    } catch (e) {
+      console.warn('Unicode/URI decoding failed:', e);
+    }
+  }
+  
+  // 2. Decode HTML/XML hexadecimal entities like &#x0045;
+  if (decoded.includes('&#x')) {
+    try {
+      decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => {
+        return String.fromCharCode(parseInt(hex, 16));
+      });
+    } catch (e) {
+      console.warn('HTML hex decoding failed:', e);
+    }
+  }
+
+  // 3. Decode HTML/XML decimal entities like &#69;
+  if (decoded.includes('&#')) {
+    try {
+      decoded = decoded.replace(/&#(\d+);/g, (_, dec) => {
+        return String.fromCharCode(parseInt(dec, 10));
+      });
+    } catch (e) {
+      console.warn('HTML decimal decoding failed:', e);
+    }
+  }
+  
+  return decoded;
+}
+
+/**
  * Transform a correlated group of webhook logs into a single DetectionEvent.
  */
 function adaptCorrelatedToDetectionEvent(entry: CorrelatedEvent): DetectionEvent {
@@ -182,8 +243,25 @@ function adaptCorrelatedToDetectionEvent(entry: CorrelatedEvent): DetectionEvent
   const cameraId = result?.cameraid ?? 'UNKNOWN';
   const cameraName = cameraId.split('/')[0]; // e.g. "FXS_CM_FE_01191574A"
 
-  // Treat "n.a." / empty string as an empty plate
-  const anprText = (result?.anpr?.text ?? '').replace(/^n\.a\.$/i, '');
+  // Extract ANPR text and confidence, handling both object and array forms
+  let rawText = '';
+  let confidenceVal = 0;
+
+  if (result?.anpr) {
+    const anprData = result.anpr;
+    if (Array.isArray(anprData)) {
+      if (anprData.length > 0) {
+        rawText = anprData[0]?.text ?? '';
+        confidenceVal = parseInt(anprData[0]?.confidence ?? '0', 10);
+      }
+    } else {
+      rawText = anprData.text ?? '';
+      confidenceVal = parseInt(anprData.confidence ?? '0', 10);
+    }
+  }
+
+  // Treat "n.a." / empty string as an empty plate, and decode any character escape formatting
+  const anprText = decodePlateText(rawText).replace(/^n\.a\.$/i, '');
 
   return {
     event_id:              entry.correlationId,
@@ -193,7 +271,7 @@ function adaptCorrelatedToDetectionEvent(entry: CorrelatedEvent): DetectionEvent
     captured_at:           capturedAt,
 
     anpr_text:             anprText,
-    plate_confidence_mode: parseInt(result?.anpr?.confidence ?? '0', 10),
+    plate_confidence_mode: confidenceVal,
     country_short:         result?.country?.country_short  || undefined,
     country_long:          result?.country?.country_long   || undefined,
     state_short:           result?.country?.state_short    || undefined,
