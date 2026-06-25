@@ -131,21 +131,21 @@ export const Reports: React.FC = () => {
               <div
                 key={rep.id}
                 onClick={() => setSelectedReport(rep.id)}
-                className={`glass-panel rounded-xl p-4 cursor-pointer transition-all duration-200 border-2 ${
+                className={`group glass-panel rounded-xl p-4 cursor-pointer transition-all duration-300 ease-out border-2 transform hover:-translate-y-1.5 hover:scale-[1.02] ${
                   selectedReport === rep.id
-                    ? 'border-brand-accent bg-brand-accent/5 shadow-lg shadow-brand-accent/5'
-                    : 'border-dark-border hover:border-slate-700 bg-dark-surface/40'
+                    ? 'border-brand-accent bg-brand-accent/5 shadow-xl shadow-brand-accent/10'
+                    : 'border-dark-border hover:border-brand-accent/60 bg-dark-surface/40 hover:bg-slate-800/30 hover:shadow-lg hover:shadow-brand-accent/5'
                 }`}
               >
                 <div className="flex items-center gap-2.5 mb-2">
-                  <div className="bg-slate-900 border border-dark-border p-2 rounded-lg shrink-0">
+                  <div className="bg-slate-900 border border-dark-border p-2 rounded-lg shrink-0 group-hover:border-brand-accent/40 group-hover:bg-slate-850 transition-all duration-300 transform group-hover:scale-110">
                     {rep.icon}
                   </div>
-                  <h4 className="text-sm font-bold text-slate-200 leading-tight">
+                  <h4 className="text-sm font-bold text-slate-200 leading-tight group-hover:text-white transition-colors duration-300">
                     {rep.name}
                   </h4>
                 </div>
-                <p className="text-xs text-text-muted leading-relaxed">
+                <p className="text-xs text-text-muted leading-relaxed transition-colors duration-300 group-hover:text-slate-300">
                   {rep.desc}
                 </p>
               </div>
