@@ -1,6 +1,7 @@
 import type { DetectionEvent, SummaryMetrics, Fine, Booking, Camera, Zone, Officer } from '../types';
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://98.94.86.116';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? '' : 'http://98.94.86.116');
 export const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'ws://98.94.86.116';
 
 // ---------------------------------------------------------------------------

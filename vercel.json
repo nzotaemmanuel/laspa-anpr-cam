@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/api/:path*", "destination": "http://98.94.86.116/api/:path*" },
+    { "source": "/s3-proxy/:path*", "destination": "https://microcam-alpr-images-808715036111.s3.amazonaws.com/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
