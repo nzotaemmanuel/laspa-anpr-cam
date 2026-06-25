@@ -246,7 +246,7 @@ export const Vehicles: React.FC = () => {
                 value={searchPlate}
                 onChange={(e) => setSearchPlate(e.target.value)}
                 placeholder="e.g. ABC123XY (partial matches)"
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -261,7 +261,7 @@ export const Vehicles: React.FC = () => {
               <select
                 value={filterZone}
                 onChange={(e) => handleFilterChange('zone', e.target.value)}
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="">All Zones</option>
                 {zones.map((z) => (
@@ -281,7 +281,7 @@ export const Vehicles: React.FC = () => {
               <select
                 value={filterStatus}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="">All Statuses</option>
                 <option value="SCANNED">Pending (Scanned)</option>
@@ -306,7 +306,7 @@ export const Vehicles: React.FC = () => {
                 type="date"
                 value={filterFrom}
                 onChange={(e) => handleDateChange('from', e.target.value)}
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
               />
             </div>
           </div>
@@ -322,7 +322,7 @@ export const Vehicles: React.FC = () => {
                 type="date"
                 value={filterTo}
                 onChange={(e) => handleDateChange('to', e.target.value)}
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
               />
             </div>
           </div>
@@ -331,7 +331,7 @@ export const Vehicles: React.FC = () => {
           <div className="lg:col-span-2">
             <button
               type="submit"
-              className="w-full bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg py-2 text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               Filter Records
             </button>

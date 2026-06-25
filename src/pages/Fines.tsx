@@ -185,7 +185,7 @@ export const Fines: React.FC = () => {
                 value={plate}
                 onChange={(e) => setPlate(e.target.value)}
                 placeholder="e.g. ABC123XY"
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -200,7 +200,7 @@ export const Fines: React.FC = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 py-2 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-10 bg-slate-900 border border-dark-border rounded-lg pl-10 pr-3.5 text-slate-200 text-sm focus:border-brand-accent focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="">All Statuses</option>
                 <option value="ISSUED">Issued (Unpaid)</option>
@@ -216,7 +216,7 @@ export const Fines: React.FC = () => {
           <div className="lg:col-span-3">
             <button
               type="submit"
-              className="w-full bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg py-2 text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               Filter Fines
             </button>

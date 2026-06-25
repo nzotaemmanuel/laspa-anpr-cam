@@ -223,7 +223,7 @@ export const Reports: React.FC = () => {
                     type="button"
                     onClick={() => setExportFormat('csv')}
                     className={`py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                      exportFormat === 'csv' ? 'bg-slate-800 text-white shadow' : 'text-text-muted hover:text-slate-200'
+                      exportFormat === 'csv' ? 'bg-slate-800 text-slate-100 shadow' : 'text-text-muted hover:text-slate-200'
                     }`}
                   >
                     CSV
@@ -232,7 +232,7 @@ export const Reports: React.FC = () => {
                     type="button"
                     onClick={() => setExportFormat('xlsx')}
                     className={`py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                      exportFormat === 'xlsx' ? 'bg-slate-800 text-white shadow' : 'text-text-muted hover:text-slate-200'
+                      exportFormat === 'xlsx' ? 'bg-slate-800 text-slate-100 shadow' : 'text-text-muted hover:text-slate-200'
                     }`}
                   >
                     Excel
@@ -241,7 +241,7 @@ export const Reports: React.FC = () => {
                     type="button"
                     onClick={() => setExportFormat('pdf')}
                     className={`py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer ${
-                      exportFormat === 'pdf' ? 'bg-slate-800 text-white shadow' : 'text-text-muted hover:text-slate-200'
+                      exportFormat === 'pdf' ? 'bg-slate-800 text-slate-100 shadow' : 'text-text-muted hover:text-slate-200'
                     }`}
                   >
                     PDF
