@@ -469,6 +469,10 @@ class ApiService {
 
       let filtered = [...mergedLogs];
 
+      // Filter out specific test plates requested by the user
+      const HIDDEN_TEST_PLATES = ['agl 431ds', 'eky 850hx'];
+      filtered = filtered.filter(e => !e.anpr_text || !HIDDEN_TEST_PLATES.includes(e.anpr_text.toLowerCase()));
+
       // Sort by captured_at descending by default so new events are at the top
       filtered.sort((a, b) => new Date(b.captured_at).getTime() - new Date(a.captured_at).getTime());
 

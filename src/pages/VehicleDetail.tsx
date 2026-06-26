@@ -127,7 +127,6 @@ export const VehicleDetail: React.FC = () => {
 
   const isPending = event.status === 'SCANNED';
   const isLowConfidence = event.plate_confidence_mode === 0;
-  const ocrConfidenceScore = isLowConfidence ? 65 : 95; // Represented percentage mapping
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6 text-left">
@@ -182,42 +181,15 @@ export const VehicleDetail: React.FC = () => {
             </div>
 
             {/* Crops and Confidence details */}
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
-              <div className="sm:col-span-4">
-                <PlateImage
-                  anprText={event.anpr_text}
-                  plateImageUrl={event.plate_image_url}
-                  confidenceMode={event.plate_confidence_mode}
-                  countryShort={event.country_short}
-                  stateShort={event.state_short}
-                  size="md"
-                />
-              </div>
-
-              {/* Confidence Meter */}
-              <div className="sm:col-span-8 bg-slate-900/40 border border-dark-border p-4 rounded-xl flex flex-col gap-2">
-                <div className="flex justify-between items-center text-xs font-semibold">
-                  <span className="text-text-muted">OCR Recognition Confidence:</span>
-                  <span className={ocrConfidenceScore >= 90 ? 'text-status-cleared' : 'text-status-disputed'}>
-                    {ocrConfidenceScore}%
-                  </span>
-                </div>
-                {/* Visual Bar meter */}
-                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-dark-border">
-                  <div 
-                    className={`h-full rounded-full ${
-                      ocrConfidenceScore >= 90 ? 'bg-status-cleared' : 'bg-status-disputed'
-                    }`} 
-                    style={{ width: `${ocrConfidenceScore}%` }} 
-                  />
-                </div>
-                <div className="text-[10px] text-text-muted font-semibold mt-1">
-                  {isLowConfidence 
-                    ? 'Carmen Engine triggered Preselection fast-read. Plate verification is required before citation.'
-                    : 'Carmen Engine complete ANPR read. High confidence OCR match.'
-                  }
-                </div>
-              </div>
+            <div className="max-w-xs">
+              <PlateImage
+                anprText={event.anpr_text}
+                plateImageUrl={event.plate_image_url}
+                confidenceMode={event.plate_confidence_mode}
+                countryShort={event.country_short}
+                stateShort={event.state_short}
+                size="md"
+              />
             </div>
           </div>
 
