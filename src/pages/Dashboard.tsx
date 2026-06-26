@@ -7,12 +7,9 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend 
 } from 'recharts';
 import { 
-  Calendar, AlertCircle, RotateCcw, Eye,
+  Calendar, AlertCircle, RotateCcw,
   Car, AlertTriangle, Scale, Lock, Truck, FileText, CheckCircle2, Clock, Coins
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { StatusBadge } from '../components/StatusBadge';
-import { formatDateTime } from '../utils/time';
 
 export const Dashboard: React.FC = () => {
   const {
@@ -501,74 +498,7 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Activity Feed */}
-      <div className="glass-panel rounded-xl p-5 text-left">
-        <div className="flex items-center justify-between mb-4 border-b border-dark-border/40 pb-3">
-          <div>
-            <h3 className="text-sm font-bold text-slate-200">Recent Activity Log</h3>
-            <p className="text-[11px] text-text-muted">Last scans captured by enforcement cameras</p>
-          </div>
-          <Link 
-            to="/vehicles" 
-            className="text-xs text-brand-accent hover:text-brand-accent-hover font-semibold hover:underline flex items-center gap-1 cursor-pointer"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            View Full Log
-          </Link>
-        </div>
 
-        {/* Simple Activity Feed list */}
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-dark-border/60 text-text-muted font-bold uppercase tracking-wider">
-                <th className="py-2.5 px-3">Plate</th>
-                <th className="py-2.5 px-3">Capture Time</th>
-                <th className="py-2.5 px-3 hidden sm:table-cell">Location</th>
-                <th className="py-2.5 px-3 hidden md:table-cell">Category / Details</th>
-                <th className="py-2.5 px-3">Enforcement</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-dark-border/30 text-slate-300">
-              {vehicles.slice(0, 10).map((item, idx) => (
-                <tr key={idx} className="hover:bg-slate-800/25 transition-colors">
-                  <td className="py-2.5 px-3 font-plate tracking-wider text-slate-200 uppercase">
-                    {item.anpr_text}
-                  </td>
-                  <td className="py-2.5 px-3 font-tabular">
-                    {formatDateTime(item.captured_at)}
-                  </td>
-                  <td className="py-2.5 px-3 hidden sm:table-cell">
-                    {item.camera_location}
-                  </td>
-                  <td className="py-2.5 px-3 hidden md:table-cell text-text-muted">
-                    {item.vehicle_colour} {item.vehicle_make} {item.vehicle_model}
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <StatusBadge status={item.status === 'SCANNED' ? (item.enforcement_status || 'PENDING') : item.status} />
-                  </td>
-                  <td className="py-2.5 px-3 text-right">
-                    <Link
-                      to={`/vehicles/${item.event_id}`}
-                      className="text-brand-accent hover:text-brand-accent-hover font-bold hover:underline cursor-pointer"
-                    >
-                      Audit Details
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {vehicles.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="py-6 text-center text-text-muted italic">
-                    No recent activity logs parsed from endpoints.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 };

@@ -156,7 +156,7 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
           <button
             onClick={() => onActionClick('FINED')}
             disabled={isLowConfidence}
-            className={`px-3 py-1.5 bg-status-fined/10 border border-status-fined/30 text-status-fined hover:bg-status-fined hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 bg-status-fined text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               isLowConfidence ? 'opacity-40 cursor-not-allowed' : ''
             }`}
             title={isLowConfidence ? 'Verify preliminary plate before fining' : 'Issue citation fine'}
@@ -167,7 +167,7 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
           <button
             onClick={() => onActionClick('CLAMPED')}
             disabled={isLowConfidence}
-            className={`px-3 py-1.5 bg-status-clamped/10 border border-status-clamped/30 text-status-clamped hover:bg-status-clamped hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 bg-status-clamped text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               isLowConfidence ? 'opacity-40 cursor-not-allowed' : ''
             }`}
             title={isLowConfidence ? 'Verify preliminary plate before clamping' : 'Confirm clamping'}
@@ -178,7 +178,7 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
           <button
             onClick={() => onActionClick('TOWED')}
             disabled={isLowConfidence}
-            className={`px-3 py-1.5 bg-status-towed/10 border border-status-towed/30 text-status-towed hover:bg-status-towed hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 bg-status-towed text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               isLowConfidence ? 'opacity-40 cursor-not-allowed' : ''
             }`}
           >
@@ -188,7 +188,7 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
           <button
             onClick={() => onActionClick('IMPOUNDED')}
             disabled={isLowConfidence}
-            className={`px-3 py-1.5 bg-status-impounded/10 border border-status-impounded/30 text-status-impounded hover:bg-status-impounded hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 bg-status-impounded text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               isLowConfidence ? 'opacity-40 cursor-not-allowed' : ''
             }`}
           >
@@ -197,14 +197,14 @@ export const DetectionCard: React.FC<DetectionCardProps> = ({
 
           <button
             onClick={() => onActionClick('BOOKED')}
-            className="px-3 py-1.5 bg-status-booked/10 border border-status-booked/30 text-status-booked hover:bg-status-booked hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer"
+            className="px-3 py-1.5 bg-status-booked text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer"
           >
             Book Parking
           </button>
 
           <button
             onClick={() => onActionClick('CLEARED')}
-            className="px-3 py-1.5 bg-status-cleared/10 border border-status-cleared/30 text-status-cleared hover:bg-status-cleared hover:text-white rounded-lg text-xs font-semibold transition-all cursor-pointer ml-auto"
+            className="px-3 py-1.5 bg-status-cleared text-white hover:opacity-85 rounded-lg text-xs font-semibold transition-all cursor-pointer ml-auto"
           >
             Clear
           </button>
