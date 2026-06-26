@@ -11,7 +11,7 @@ import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 
 import {
-  LayoutDashboard, ClipboardList, Receipt, BookOpen,
+  LayoutDashboard, ClipboardList, Receipt,
   FileSpreadsheet, Settings as SettingsIcon, Menu, X, LogOut,
   Sun, Moon, ChevronRight, ChevronLeft,
 } from 'lucide-react';
