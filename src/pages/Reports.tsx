@@ -134,7 +134,7 @@ export const Reports: React.FC = () => {
                 className={`group glass-panel rounded-xl p-4 cursor-pointer transition-all duration-300 ease-out border-2 transform hover:-translate-y-1.5 hover:scale-[1.02] ${
                   selectedReport === rep.id
                     ? 'border-brand-accent bg-brand-accent/5 shadow-xl shadow-brand-accent/10'
-                    : 'border-dark-border hover:border-brand-accent/60 bg-dark-surface/40 hover:bg-slate-800/30 hover:shadow-lg hover:shadow-brand-accent/5'
+                    : 'border-dark-border hover:border-brand-accent/60 bg-slate-900/40 hover:bg-slate-800/30 hover:shadow-lg hover:shadow-brand-accent/5'
                 }`}
               >
                 <div className="flex items-center gap-2.5 mb-2">
@@ -265,7 +265,7 @@ export const Reports: React.FC = () => {
               <button
                 type="submit"
                 disabled={isExporting || !isSupervisor}
-                className="w-full bg-brand-accent hover:bg-brand-accent-hover disabled:opacity-40 disabled:hover:bg-brand-accent text-white font-semibold py-2.5 rounded-lg text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-accent/15 transition-all mt-4 cursor-pointer"
+                className="w-full h-12 btn-action-animated text-white border-none rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 shadow-lg mt-4 cursor-pointer disabled:opacity-40"
               >
                 <Download className="w-4 h-4" />
                 {isExporting ? 'Preparing export...' : 'Export Consolidated Report'}

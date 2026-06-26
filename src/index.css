@@ -25,7 +25,8 @@
   --font-mono:    'JetBrains Mono', monospace;
 
   /* Theme-aware overrides for hardcoded layout classes */
-  --color-dark-border: var(--border-subtle);
+  --color-dark-border:  var(--border-subtle);
+  --color-dark-surface: var(--bg-surface-2);
   --color-slate-50:  var(--text-primary);
   --color-slate-100: var(--text-primary);
   --color-slate-200: var(--text-primary);
@@ -72,8 +73,8 @@
   --border-muted:   rgba(99, 102, 241, 0.18);
   --border-accent:  rgba(99, 102, 241, 0.45);
   --text-primary:   #0F172A;
-  --text-secondary: #475569;
-  --text-muted:     #94A3B8;
+  --text-secondary: #334155;
+  --text-muted:     #64748B;
   --blob-1: radial-gradient(ellipse 60% 50% at 20% 20%, rgba(99,102,241,0.12) 0%, transparent 70%);
   --blob-2: radial-gradient(ellipse 50% 40% at 80% 80%, rgba(139,92,246,0.08) 0%, transparent 70%);
   --blob-3: radial-gradient(ellipse 40% 50% at 60% 40%, rgba(59,130,246,0.05) 0%, transparent 60%);
@@ -203,7 +204,7 @@
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-right: 1px solid var(--border-subtle);
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ─── Typography Utilities ───────────────────────────────────────────────────── */
@@ -366,13 +367,14 @@
   margin-top: 0.25rem;
 }
 
-/* ─── Animations ─────────────────────────────────────────────────────────────── */
+/* ─── Animations & Transitions ────────────────────────────────────────────────── */
 @keyframes slide-up {
-  from { transform: translateY(14px); opacity: 0; }
+  from { transform: translateY(16px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 .animate-slide-up {
-  animation: slide-up 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes fade-in {
@@ -380,7 +382,8 @@
   to   { opacity: 1; }
 }
 .animate-fade-in {
-  animation: fade-in 0.4s ease forwards;
+  animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity;
 }
 
 @keyframes pulse-ring {
@@ -417,5 +420,291 @@
   to   { transform: translateX(0); }
 }
 .animate-slide-in-left {
-  animation: slide-in-left 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-in-left 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ─── Smooth Scroll & Hover Enhancements ───────────────────────────────────────── */
+html, body {
+  scroll-behavior: smooth !important;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth !important;
+}
+
+/* Fine-tune global transitions to be more fluid */
+*, *::before, *::after {
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Overwrite table-row transition to be extremely fluid */
+.table-row {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-left-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-left: 3px solid transparent;
+  will-change: transform;
+}
+.table-row:hover {
+  background: var(--bg-surface-2);
+  border-left-color: rgba(6, 182, 212, 0.85) !important;
+  transform: translateX(4px) scale(1.002);
+}
+
+/* ─── Status-Colored Enforcement Action Buttons ─────────────────────────────── */
+
+/* Shared animation mechanics for all enforcement action buttons */
+.btn-action-fine,
+.btn-action-clamp,
+.btn-action-tow,
+.btn-action-impound,
+.btn-action-clear,
+.btn-action-book {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.2s ease !important;
+  will-change: transform, box-shadow;
+}
+
+.btn-action-fine     { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); box-shadow: 0 4px 14px rgba(239,68,68,0.4); }
+.btn-action-clamp    { background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); box-shadow: 0 4px 14px rgba(249,115,22,0.4); }
+.btn-action-tow      { background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%); box-shadow: 0 4px 14px rgba(168,85,247,0.4); }
+.btn-action-impound  { background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); box-shadow: 0 4px 14px rgba(244,63,94,0.4); }
+.btn-action-clear    { background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%); box-shadow: 0 4px 14px rgba(34,197,94,0.4); }
+.btn-action-book     { background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.9) 100%); box-shadow: 0 4px 14px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); }
+
+.btn-action-fine:hover,
+.btn-action-clamp:hover,
+.btn-action-tow:hover,
+.btn-action-impound:hover,
+.btn-action-clear:hover,
+.btn-action-book:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.1);
+}
+
+.btn-action-fine:active,
+.btn-action-clamp:active,
+.btn-action-tow:active,
+.btn-action-impound:active,
+.btn-action-clear:active,
+.btn-action-book:active {
+  transform: translateY(1px) scale(0.97);
+  filter: brightness(0.92);
+}
+
+.btn-action-fine:disabled,
+.btn-action-clamp:disabled,
+.btn-action-tow:disabled,
+.btn-action-impound:disabled,
+.btn-action-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Shine swipe on all enforcement buttons */
+.btn-action-fine::after,
+.btn-action-clamp::after,
+.btn-action-tow::after,
+.btn-action-impound::after,
+.btn-action-clear::after,
+.btn-action-book::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: rotate(30deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.btn-action-fine:hover::after,
+.btn-action-clamp:hover::after,
+.btn-action-tow:hover::after,
+.btn-action-impound:hover::after,
+.btn-action-clear:hover::after,
+.btn-action-book:hover::after {
+  left: 170%;
+  transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ─── Animated & Glowing Filter Button ────────────────────────────────────────── */
+@keyframes filter-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes filter-glow {
+  0% { box-shadow: 0 4px 14px 0 rgba(6, 182, 212, 0.35), 0 0 0 1px rgba(6, 182, 212, 0.25) inset; }
+  50% { box-shadow: 0 6px 24px 6px rgba(99, 102, 241, 0.45), 0 0 0 1px rgba(99, 102, 241, 0.35) inset; }
+  100% { box-shadow: 0 4px 14px 0 rgba(6, 182, 212, 0.35), 0 0 0 1px rgba(6, 182, 212, 0.25) inset; }
+}
+
+.btn-filter-animated, .btn-action-animated {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 35%, #6366F1 70%, #8B5CF6 100%);
+  background-size: 300% 300%;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  animation: filter-gradient 6s ease infinite, filter-glow 3s ease-in-out infinite;
+  will-change: transform, background-position, box-shadow;
+}
+
+.btn-filter-animated:hover, .btn-action-animated:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.08);
+}
+
+.btn-filter-animated:active, .btn-action-animated:active {
+  transform: translateY(1px) scale(0.97);
+  filter: brightness(0.94);
+}
+
+/* Premium shine reflection swipe on hover */
+.btn-filter-animated::after, .btn-action-animated::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.btn-filter-animated:hover::after, .btn-action-animated:hover::after {
+  left: 170%;
+  transition: all 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ─── Light Mode Explicit Overrides ──────────────────────────────────────────── */
+/* Guarantee readable text on all UI elements in light mode */
+
+:root.light .page-title,
+:root.light h1, :root.light h2, :root.light h3, :root.light h4 {
+  color: var(--text-primary);
+}
+
+/* Info / detail card data (bg-slate-900/30 panels) */
+:root.light [class*="bg-slate-9"] span,
+:root.light [class*="bg-slate-9"] p,
+:root.light [class*="bg-slate-9"] div {
+  color: inherit;
+}
+
+/* Explicit text colour overrides for text that must be dark in light mode */
+:root.light .text-slate-100,
+:root.light .text-slate-200,
+:root.light .text-slate-300 {
+  color: var(--text-primary) !important;
+}
+
+:root.light .text-slate-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* Pre / code blocks */
+:root.light pre,
+:root.light code {
+  background: rgba(99, 102, 241, 0.05) !important;
+  border-color: rgba(99, 102, 241, 0.15) !important;
+  color: #1E293B !important;
+}
+
+/* Table body text */
+:root.light tbody tr td {
+  color: var(--text-primary);
+}
+
+:root.light tbody tr:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+/* Report card description text */
+:root.light .glass-panel p,
+:root.light .glass-panel span:not([class*="text-status"]):not([class*="text-brand"]):not(.logo-text) {
+  color: var(--text-secondary);
+}
+
+/* Ensure page subtitles and muted labels are visible */
+:root.light .page-subtitle { color: var(--text-muted); }
+
+/* Settings webhook metric cells */
+:root.light [class*="bg-slate-9"] .text-text-muted { color: var(--text-muted) !important; }
+
+/* Reports: active query readout */
+:root.light .font-semibold { color: var(--text-primary); }
+
+/* Dashboard: white text on gradient hero — keep white (sits on colored bg) */
+:root.light .gradient-hero-text { color: #ffffff; }
+
+/* Login page: white text on gradient bg — keep white */
+:root.light .login-hero-text { color: #ffffff; }
+
+/* Ensure placeholder text is visible in light mode */
+:root.light input::placeholder,
+:root.light textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.8;
+}
+
+/* Input, select, textarea in light mode */
+:root.light input,
+:root.light select,
+:root.light textarea {
+  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+:root.light input:focus,
+:root.light select:focus,
+:root.light textarea:focus {
+  border-color: rgba(99, 102, 241, 0.6) !important;
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Select option text */
+:root.light select option {
+  background: #ffffff;
+  color: #0F172A;
+}
+

@@ -23,10 +23,10 @@ export const VehicleDetail: React.FC = () => {
   const [savingNotes, setSavingNotes] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const [activeAction, setActiveAction] = useState<'FINED' | 'CLAMPED' | 'TOWED' | 'IMPOUNDED' | 'BOOKED' | 'CLEARED' | null>(null);
+  const [activeAction, setActiveAction] = useState<'FINED' | 'CLAMPED' | 'TOWED' | 'IMPOUNDED' | 'CLEARED' | null>(null);
   const [historicalEvents, setHistoricalEvents] = useState<DetectionEvent[]>([]);
 
-  const handleActionTrigger = (action: 'FINED' | 'CLAMPED' | 'TOWED' | 'IMPOUNDED' | 'BOOKED' | 'CLEARED') => {
+  const handleActionTrigger = (action: 'FINED' | 'CLAMPED' | 'TOWED' | 'IMPOUNDED' | 'CLEARED') => {
     setActiveAction(action);
   };
 
@@ -303,43 +303,37 @@ export const VehicleDetail: React.FC = () => {
                   <button
                     onClick={() => handleActionTrigger('FINED')}
                     disabled={isLowConfidence}
-                    className="py-2.5 bg-status-fined text-white disabled:opacity-40 rounded-lg text-xs font-bold hover:bg-red-600 transition-colors shadow-md cursor-pointer disabled:cursor-not-allowed"
+                    className="btn-action-fine py-2.5 rounded-lg text-xs disabled:cursor-not-allowed"
                   >
                     Issue Fine
                   </button>
                   <button
                     onClick={() => handleActionTrigger('CLAMPED')}
                     disabled={isLowConfidence}
-                    className="py-2.5 bg-status-clamped text-white disabled:opacity-40 rounded-lg text-xs font-bold hover:bg-orange-600 transition-colors shadow-md cursor-pointer disabled:cursor-not-allowed"
+                    className="btn-action-clamp py-2.5 rounded-lg text-xs disabled:cursor-not-allowed"
                   >
                     Clamp Vehicle
                   </button>
                   <button
                     onClick={() => handleActionTrigger('TOWED')}
                     disabled={isLowConfidence}
-                    className="py-2.5 bg-status-towed text-white disabled:opacity-40 rounded-lg text-xs font-bold hover:bg-purple-650 transition-colors shadow-md cursor-pointer disabled:cursor-not-allowed"
+                    className="btn-action-tow py-2.5 rounded-lg text-xs disabled:cursor-not-allowed"
                   >
                     Dispatch Tow
                   </button>
                   <button
                     onClick={() => handleActionTrigger('IMPOUNDED')}
                     disabled={isLowConfidence}
-                    className="py-2.5 bg-status-impounded text-white disabled:opacity-40 rounded-lg text-xs font-bold hover:bg-red-950 transition-colors shadow-md cursor-pointer disabled:cursor-not-allowed"
+                    className="btn-action-impound py-2.5 rounded-lg text-xs disabled:cursor-not-allowed"
                   >
                     Impound Vehicle
                   </button>
                 </div>
                 
-                <div className="border-t border-dark-border/40 pt-3 flex gap-3">
-                  <button
-                    onClick={() => handleActionTrigger('BOOKED')}
-                    className="flex-1 py-2 bg-slate-900 border border-dark-border hover:bg-slate-800 text-slate-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                  >
-                    Book Parking
-                  </button>
+                <div className="border-t border-dark-border/40 pt-3">
                   <button
                     onClick={() => handleActionTrigger('CLEARED')}
-                    className="flex-1 py-2 bg-status-cleared text-white hover:bg-green-600 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                    className="btn-action-clear w-full py-2.5 rounded-lg text-xs"
                   >
                     Clear Vehicle
                   </button>

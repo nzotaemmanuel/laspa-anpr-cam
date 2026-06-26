@@ -3,7 +3,7 @@ import { useAppStore } from '../store/appStore';
 import type { Fine } from '../types';
 import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
-import { Search, ShieldAlert, Eye, Settings2 } from 'lucide-react';
+import { Search, ShieldAlert, Eye, Settings2, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/time';
 
@@ -216,8 +216,9 @@ export const Fines: React.FC = () => {
           <div className="lg:col-span-4">
             <button
               type="submit"
-              className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="group w-full h-12 btn-action-animated text-white border-none rounded-xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2 shadow-lg"
             >
+              <Filter className="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
               Filter Fines
             </button>
           </div>

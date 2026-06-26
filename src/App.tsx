@@ -7,7 +7,6 @@ import { Vehicles } from './pages/Vehicles';
 import { VehicleDetail } from './pages/VehicleDetail';
 import { Fines } from './pages/Fines';
 import { FineDetail } from './pages/FineDetail';
-import { Bookings } from './pages/Bookings';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 
@@ -58,7 +57,6 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard',       icon: <LayoutDashboard className="w-4 h-4" />, roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/vehicles',  label: 'Scans Log',       icon: <ClipboardList className="w-4 h-4" />,   roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/fines',     label: 'Fines',           icon: <Receipt className="w-4 h-4" />,         roles: ['OFFICER','SUPERVISOR','ADMIN'] },
-  { path: '/bookings',  label: 'Parking Bookings',icon: <BookOpen className="w-4 h-4" />,        roles: ['OFFICER','SUPERVISOR','ADMIN'] },
   { path: '/reports',   label: 'Reports',         icon: <FileSpreadsheet className="w-4 h-4" />, roles: ['SUPERVISOR','ADMIN'] },
   { path: '/settings',  label: 'Settings',        icon: <SettingsIcon className="w-4 h-4" />,    roles: ['ADMIN'] },
 ];
@@ -341,7 +339,6 @@ const AppLayout: React.FC = () => {
             <Route path="/vehicles/:event_id" element={<ProtectedRoute><VehicleDetail /></ProtectedRoute>} />
             <Route path="/fines"     element={<ProtectedRoute><Fines /></ProtectedRoute>} />
             <Route path="/fines/:fine_id" element={<ProtectedRoute><FineDetail /></ProtectedRoute>} />
-            <Route path="/bookings"  element={<ProtectedRoute><Bookings /></ProtectedRoute>} />
             <Route path="/reports"   element={<ProtectedRoute allowedRoles={['SUPERVISOR','ADMIN']}><Reports /></ProtectedRoute>} />
             <Route path="/settings"  element={<ProtectedRoute allowedRoles={['ADMIN']}><Settings /></ProtectedRoute>} />
             <Route path="*"          element={<Navigate to="/dashboard" replace />} />

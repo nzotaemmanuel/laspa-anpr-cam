@@ -4,7 +4,7 @@ import { DataTable } from '../components/DataTable';
 import type { Column } from '../components/DataTable';
 import { StatusBadge } from '../components/StatusBadge';
 import { formatImageSrc } from '../components/PlateImage';
-import { Search, MapPin, ShieldAlert, Eye, Settings2, Calendar } from 'lucide-react';
+import { Search, MapPin, ShieldAlert, Eye, Settings2, Calendar, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { DetectionEvent } from '../types';
 import { formatDateTime } from '../utils/time';
@@ -331,8 +331,9 @@ export const Vehicles: React.FC = () => {
           <div className="lg:col-span-4">
             <button
               type="submit"
-              className="w-full h-10 bg-slate-900 hover:bg-slate-850 border border-dark-border hover:border-slate-600 text-slate-200 rounded-lg text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="group w-full h-12 btn-filter-animated text-white border-none rounded-xl text-sm font-bold cursor-pointer flex items-center justify-center gap-2 shadow-lg"
             >
+              <Filter className="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
               Filter Records
             </button>
           </div>

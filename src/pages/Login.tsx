@@ -105,7 +105,7 @@ export const Login: React.FC = () => {
             <button
               type="submit"
               disabled={authLoading}
-              className="w-full bg-brand-accent hover:bg-brand-accent-hover text-white rounded-lg py-2.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-brand-accent/50 focus:ring-offset-2 focus:ring-offset-slate-900 shadow-lg shadow-brand-accent/15 cursor-pointer mt-2 flex items-center justify-center gap-2"
+              className="w-full h-12 btn-action-animated text-white border-none rounded-xl text-sm font-bold cursor-pointer mt-2 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
             >
               {authLoading ? (
                 <>
